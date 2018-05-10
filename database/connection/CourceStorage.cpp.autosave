@@ -1,0 +1,21 @@
+#include "CCourceStorage.h"
+
+CCourceStorage::CCourceStorage()
+    : AStorage("CourseStorage.db" , "test/database/", "QSQLITE")
+{
+
+}
+
+bool CCourceStorage::init()
+{
+    mDatabase =  new QSqlDatabase(mDatabaseType);
+    mDatabase.setDatabaseName(mDatabaseType);
+
+    if ( !mDatabase.open())
+    {
+        qDebug() << "Error. Cannot open database";
+        return false;
+    }
+    
+    
+};
