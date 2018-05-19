@@ -1,5 +1,5 @@
 #include "CController.h"
-
+#include <QDebug>
 #include <algorithm>
 
 using namespace common::controller;

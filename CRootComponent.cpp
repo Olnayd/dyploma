@@ -2,7 +2,6 @@
 
 #include "CRootComponent.h"
 
-#include <QDebug>
 #include "controller/CCourseCtrl.h"
 
 enum class EController
@@ -22,7 +21,6 @@ CRootComponent::CRootComponent()
 
 void CRootComponent::requestBoot()
 {
-    qDebug() << "CRootComponent::requestBoot";
     fillInControllers(mCtrlList);
     for (auto& ctrl : mCtrlList)
     {
@@ -33,7 +31,6 @@ void CRootComponent::requestBoot()
 
 void CRootComponent::update()
 {
-    qDebug() << "CRootComponent::update";
     if (!mbIsApplicationReady)
     {
         if (areAllControllersInitialized())

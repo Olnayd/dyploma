@@ -7,7 +7,6 @@
 #include "database/connection/CDatabaseConnectionFactory.h"
 #include <QDebug>
 
-
 CCourseCtrl::CCourseCtrl( )
     : mSqlController   ( std::make_shared<CSqlSubController>())
     , mTextController  ( std::make_shared<CTextStorageSubCtrl>(mSqlController))

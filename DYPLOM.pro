@@ -47,4 +47,5 @@ SOURCES += \
     controller/subController/CSqlSubController.cpp \
     database/query/SqlGetSchemaVersion.cpp \
     database/query/SqlImageStorageStatement.cpp \
-    database/query/SqlTextStorageStatement.cpp
+    database/query/SqlTextStorageStatement.cpp \
+    database/query/sqlquery.cpp

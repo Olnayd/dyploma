@@ -5,6 +5,7 @@ namespace common
 {
     struct version
     {
+       version();
        version( int major_, int minor_);
 
        int major;

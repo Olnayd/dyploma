@@ -33,28 +33,32 @@ bool CSqlSubController::executeQuery(SqlQuery<T>& sqlQuery)
     if (stmtList.empty()) return true;
 
     auto database = CDatabaseConnectionFactory::getConnection(sqlQuery.mDestinationStorage);
-    sqlQuery.mQueryPtr =  new QSqlQuery(database->getSqlDatabase());
 
 
-    //Transaction
     bool isExecutionFailed = false;
+
+    ////Transaction
     database->getSqlDatabase().transaction();
-    for (auto stmt : stmtList)
+    qDebug() << "[SQL]" << "Start transaction";
+    for (QString stmt : stmtList)
     {
-        qDebug() << stmt.toStdString().c_str();
-        if(!sqlQuery.mQueryPtr->exec(stmt))
-        {
-            isExecutionFailed = true;
-            break;
-             qDebug() << "CSqlSubController query execution failed. Start rollback";
-            return database->getSqlDatabase().rollback();
-        }
+        QString toTrace = stmt;
+        qDebug() << "[SQL]" << toTrace.replace(" ", "").toStdString().data();
+        if(!sqlQuery.exec(stmt)){ isExecutionFailed = true; break;}
     }
+
+
     if (isExecutionFailed) {
+        qDebug() << "[SQL]" << "Transaction failed, start rollback";
         database->getSqlDatabase().rollback();
         return false;
     }
-    else return database->getSqlDatabase().commit();
+    sqlQuery.prepareResult();
+    qDebug() << "[SQL]" << "Commit transaction";
+    database->getSqlDatabase().commit();
+    ////
+
+    return true;
 
 }
 #endif // CSQLSUBCONTROLLER_H

@@ -5,7 +5,7 @@ namespace database
 {
     namespace constant
     {
-        const common::version ImageStorageVersion(1, 2);
-        const common::version TextStorageVersion(2, 2);
+        const common::version ImageStorageVersion(1, 1);
+        const common::version TextStorageVersion(1, 1);
     }
 }

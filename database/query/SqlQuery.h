@@ -11,90 +11,87 @@
 class CSqlSubController;
 
 template<typename RETERN_TYPE>
-class SqlQuery
+class SqlQuery : private QSqlQuery
 {
     friend CSqlSubController;
 public:
-    SqlQuery( EStorage type );
+    SqlQuery( EStorage destinationStorage );
     ~SqlQuery( );
 
-    bool next();
-    void finish();
-    QVariant value( int pos );
+    using QSqlQuery::next;
+    using QSqlQuery::finish;
+    using QSqlQuery::value;
 
-    RETERN_TYPE getResult();
+    RETERN_TYPE getResult() const;
 
 private:
     bool isErrorOccured();
+
+
+    //called after execution of query
     void prepareResult();
     virtual RETERN_TYPE prepareResultOnSuccess() = 0;
     virtual RETERN_TYPE prepareResultOnError() = 0;
     virtual QStringList preapareStatement() = 0;
 private:
-    EStorage   mDestinationStorage;
-    QSqlQuery* mQueryPtr;
+    EStorage mDestinationStorage;
+    RETERN_TYPE mResult;
 };
 
 template<typename RETERN_TYPE>
 SqlQuery<RETERN_TYPE>::~SqlQuery()
 {
-    if ( mQueryPtr != nullptr )
-        mQueryPtr->finish();
-    delete mQueryPtr;
+    finish();
 }
 
 template<typename RETERN_TYPE>
-SqlQuery<RETERN_TYPE>::SqlQuery(EStorage storageType)
-    : mDestinationStorage(storageType)
-    , mQueryPtr(nullptr)
+SqlQuery<RETERN_TYPE>::SqlQuery(EStorage destinationStorage)
+    : QSqlQuery(CDatabaseConnectionFactory::getConnection(destinationStorage)->getSqlDatabase())
+    , mDestinationStorage{destinationStorage}
+    , mResult()
 {}
-
-
-template<typename RETERN_TYPE>
-QVariant SqlQuery<RETERN_TYPE>::value(int pos)
-{
-    assert(mQueryPtr != nullptr);
-    return mQueryPtr->value(pos);
-}
-
-template<typename RETERN_TYPE>
-bool SqlQuery<RETERN_TYPE>::next()
-{
-    assert(mQueryPtr != nullptr);
-    return mQueryPtr->next();
-}
-
-template<typename RETERN_TYPE>
-void SqlQuery<RETERN_TYPE>::finish()
-{
-    assert(mQueryPtr != nullptr);
-    return mQueryPtr->finish();
-}
 
 template<typename RETERN_TYPE>
 bool SqlQuery<RETERN_TYPE>::isErrorOccured( )
 {
-    assert(mQueryPtr != nullptr);
-    return mQueryPtr->lastError().isValid();
+    return lastError().isValid();
 }
 
 template<typename RETERN_TYPE>
-RETERN_TYPE SqlQuery<RETERN_TYPE>::getResult( )
+void SqlQuery<RETERN_TYPE>::prepareResult( )
 {
-    assert(mQueryPtr != nullptr);
-    if (isErrorOccured() || mQueryPtr->size() > 0)
-    {
-        //return getOnErrorResult();
-    }
-    else
-    {
-        //return getOnSuccessResult();
-    }
+    mResult = isErrorOccured() ? prepareResultOnError() : prepareResultOnSuccess();
     finish();
 }
 
+template<typename RETERN_TYPE>
+RETERN_TYPE SqlQuery<RETERN_TYPE>::getResult( ) const
+{
+    return mResult;
+}
 
 
+template<>
+class SqlQuery<void> : private QSqlQuery
+{
+        friend CSqlSubController;
+public:
+    SqlQuery( EStorage destinationStorage );
+    ~SqlQuery( );
+
+    using QSqlQuery::next;
+    using QSqlQuery::finish;
+    using QSqlQuery::value;
+private:
+
+    //called after execution of query
+    void prepareResult();
+    virtual void prepareResultOnSuccess() = 0;
+    virtual void prepareResultOnError() = 0;
+    virtual QStringList preapareStatement() = 0;
+private:
+    EStorage mDestinationStorage;
+};
 
 
 #endif // SQLQUERY_H

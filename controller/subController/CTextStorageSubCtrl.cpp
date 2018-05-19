@@ -20,9 +20,23 @@ bool CTextStorageSubCtrl::init()
 
     if ( database::constant::TextStorageVersion != dbVersion)
     {
+        qDebug()<< "[" << getName() << "]"
+                << "different database versions. Expected"
+                << database::constant::TextStorageVersion.major
+                << ":"
+                << database::constant::TextStorageVersion.minor
+                << "but"
+                << dbVersion.major
+                << ":"
+                << dbVersion.minor
+                << "is come.";
+
         SqlTextStorageStatement stmtInitImage (EStorage::TEXT_STORAGE);
         if ( !mSqlController->executeQuery(stmtInitImage) )
-            qDebug()<< "CTextStorageSubCtrl Query execution failed";
+        {
+            qDebug()<< "[" << getName() << "]" << "re-creation of DB failed";
+            return false;
+        }
     }
     return true;
 }

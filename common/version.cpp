@@ -8,3 +8,11 @@ version::version( int major_, int minor_)
 {
 
 }
+
+version::version()
+    : major(-1)
+    , minor(-1)
+{
+
+}
+
