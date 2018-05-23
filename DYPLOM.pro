@@ -1,4 +1,4 @@
-QT += core sql
+QT += core sql network
 QT -= gui
 
 CONFIG += console c++11
@@ -27,7 +27,9 @@ HEADERS += \
     database/query/SqlQuery.h \
     database/query/SqlTextStorageStatement.h \
     database/CSqlConstants.h \
-    CRootComponent.h
+    CRootComponent.h \
+    CCourseProcessore.hpp \
+    CClient.h
 
 SOURCES += \
     common/controller/CController.cpp \
@@ -48,4 +50,6 @@ SOURCES += \
     database/query/SqlGetSchemaVersion.cpp \
     database/query/SqlImageStorageStatement.cpp \
     database/query/SqlTextStorageStatement.cpp \
-    database/query/sqlquery.cpp
+    database/query/sqlquery.cpp \
+    CCourseProcessor.cpp \
+    CClient.cpp

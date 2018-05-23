@@ -8,8 +8,16 @@
 #include "subController/CImageStorageSubCtrl.h"
 #include "subController/CTextStorageSubCtrl.h"
 
-class CCourseCtrl : public common::controller::CController
+#include <QTcpServer>
+
+class QTcpServer;
+class QTcpSocket;
+
+class CCourseCtrl :
+        public QObject,
+        public common::controller::CController
 {
+    Q_OBJECT
 public:
     CCourseCtrl();
 
@@ -18,9 +26,16 @@ public:
     const char* getName() override;
 
 private:
+    void sendToClient(QTcpSocket* pSocket, const QString& str);
+private:
+    QTcpServer* m_ptcpServer;
     std::shared_ptr<CSqlSubController> mSqlController;
     std::shared_ptr<CTextStorageSubCtrl> mTextController;
     std::shared_ptr<CImageStorageSubCtrl> mImageController;
+
+public slots:
+    virtual void slotNewConnection();
+            void slotReadClient   ();
 
 
 };
