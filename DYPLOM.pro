@@ -29,7 +29,10 @@ HEADERS += \
     database/CSqlConstants.h \
     CRootComponent.h \
     CCourseProcessore.hpp \
-    CClient.h
+    CClient.h \
+    crequestjob.h \
+    common/JobQueue.hpp \
+    common/IJob.h
 
 SOURCES += \
     common/controller/CController.cpp \
@@ -52,4 +55,7 @@ SOURCES += \
     database/query/SqlTextStorageStatement.cpp \
     database/query/sqlquery.cpp \
     CCourseProcessor.cpp \
-    CClient.cpp
+    CClient.cpp \
+    crequestjob.cpp \
+    common/JobQueue.cpp \
+    common/IJob.cpp
