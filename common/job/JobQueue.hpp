@@ -3,11 +3,13 @@
 
 #include <QObject>
 #include <stack>
+#include <memory>
 #include "IJob.h"
 
 class JobQueue : public QObject
 {
-    int addJob(const IJob&);
+    Q_OBJECT
+    int addJob( std::shared_ptr<IJob>&);
 
 
 signals:
@@ -29,8 +31,8 @@ private slots:
 public:
     JobQueue();
 
-    IJob* mWorkingJob;
-    std::stack<IJob> mPendingJobs;
+    std::shared_ptr<IJob> mWorkingJob;
+    std::stack<std::shared_ptr<IJob>> mPendingJobs;
 };
 
 #endif // JOBQUEUE_H

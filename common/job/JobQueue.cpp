@@ -8,13 +8,13 @@ JobQueue::JobQueue()
             this,   SLOT(endProcessJob()));
 }
 
-int JobQueue::addJob(const IJob& userJob)
+int JobQueue::addJob( std::shared_ptr<IJob>& userJob)
 {
     static int sProcessingJobsCounter = 0;
     sProcessingJobsCounter++;
 
     mPendingJobs.push(userJob);
-    emit newJob();
+    emit  nextJob();
     return sProcessingJobsCounter;
 }
 
@@ -23,21 +23,21 @@ void JobQueue::startProcessJob()
     if( nullptr == mWorkingJob          &&
         false   == mPendingJobs.empty() )
     {
-        mWorkingJob = &mPendingJobs.top();
+        mWorkingJob = mPendingJobs.top();
 
-        connect (mWorkingJob, SIGNAL(initialised()),
+        connect (mWorkingJob.get(), SIGNAL(sig_initialised()),
                  this,          SLOT(job_initialised()));
-        connect (mWorkingJob, SIGNAL(executed()),
+        connect (mWorkingJob.get(), SIGNAL(sig_executed()),
                  this,          SLOT(job_executed()));
-        connect (mWorkingJob, SIGNAL(preparedForShutdown()),
+        connect (mWorkingJob.get(), SIGNAL(sig_preparedForShutdown()),
                  this,          SLOT(job_preparedForShutdown()));
 
         connect (this,        SIGNAL(job_init()),
-                 mWorkingJob,   SLOT(m_initialise()));
+                 mWorkingJob.get(),   SLOT(slot_initialise()));
         connect (this,        SIGNAL(job_execute()),
-                 mWorkingJob,   SLOT(m_execute()));
+                 mWorkingJob.get(),   SLOT(slot_execute()));
         connect (this,        SIGNAL(job_prepareShutdown()),
-                 mWorkingJob,   SLOT(m_prepareShutdown()));
+                 mWorkingJob.get(),   SLOT(slot_prepareShutdown()));
 
         emit job_init();
     };
@@ -47,21 +47,21 @@ void JobQueue::endProcessJob()
 {
     if ( mWorkingJob != nullptr)
     {
-        disconnect( mWorkingJob, SIGNAL(initialised()),
+        disconnect( mWorkingJob.get(), SIGNAL(sig_initialised()),
                     this,          SLOT(job_initialised()));
-        disconnect( mWorkingJob, SIGNAL(executed()),
+        disconnect( mWorkingJob.get(), SIGNAL(sig_executed()),
                     this,          SLOT(job_executed()));
-        disconnect( mWorkingJob, SIGNAL(preparedForShutdown()),
+        disconnect( mWorkingJob.get(), SIGNAL(sig_preparedForShutdown()),
                     this,          SLOT(job_preparedForShutdown()));
 
         disconnect( this,        SIGNAL(job_init()),
-                    mWorkingJob,   SLOT(m_initialise()));
+                    mWorkingJob.get(),   SLOT(slot_initialise()));
         disconnect( this,        SIGNAL(job_execute()),
-                    mWorkingJob,   SLOT(m_execute()));
+                    mWorkingJob.get(),   SLOT(slot_execute()));
         disconnect( this,        SIGNAL(job_prepareShutdown()),
-                    mWorkingJob,   SLOT(m_prepareShutdown()));
+                    mWorkingJob.get(),   SLOT(slot_prepareShutdown()));
 
-        mWorkingJob = nullptr;
+        mWorkingJob.reset();
         mPendingJobs.pop();
 
         emit nextJob();

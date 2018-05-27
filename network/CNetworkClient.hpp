@@ -1,15 +1,18 @@
 #ifndef CCLIENT_H
 #define CCLIENT_H
 
-
+#include <QObject>
 #include<QTcpSocket>
 
-class CClient
+class CNetworkClient : public QObject
 {
+    Q_OBJECT
 public:
-    CClient(QTcpSocket* mSocket);
+    CNetworkClient(QTcpSocket* mSocket, const quint32 clientID);
+    ~CNetworkClient();
 
     QTcpSocket* getSocket();
+    quint32 getClientId();
 signals:
     void connected();
     void disconnected();
@@ -21,6 +24,7 @@ private slots:
     void slot_readyRead();
 
 private:
+    quint32 mClientId;
     QTcpSocket* mSocket;
 };
 
