@@ -1,4 +1,6 @@
 #include "CUserSubCtrl.h"
+#include "query/SqlSignIn.hpp"
+#include "query/SqlSignUp.hpp"
 
 CUserSubCtrl::CUserSubCtrl( std::shared_ptr<CSqlSubCtrl> sqlController)
     : mSqlController( sqlController )
@@ -31,10 +33,9 @@ bool CUserSubCtrl::isClientHasPermission(const quint32 clientId, const quint8 pe
     return false;
 }
 
-void CUserSubCtrl::authorizeClient(const QString& login,
-                                   const QString& password,
-                                   const CResponseContext& responseContext,
-                                   ICourseResponseHandle& reponseHandle)
+void CUserSubCtrl::signIn( const ClientIdentificator& clientIdent,
+                           const CResponseContext& responseContext,
+                           ICourseResponseHandle& reponseHandle)
 {
     const ::std::shared_ptr<CNetworkClient>& netwClient = responseContext.clientPtr;
     connect(netwClient.get(), SIGNAL(disconnected()),
@@ -46,13 +47,28 @@ void CUserSubCtrl::authorizeClient(const QString& login,
         mClientList.insert(::std::make_pair(netwClient->getClientId(), ClientInfo(netwClient->getClientId())));
     }
 
-    auto itTEMP = mClientList.find(netwClient->getClientId());
-    if (itTEMP != mClientList.end())
-        itTEMP->second.setClientPermissions(3);
+    SqlSignIn query(clientIdent);
+    if(mSqlController->executeQuery(query))
+    {
+        reponseHandle.response_signIn(query.getResult(), responseContext);
+    }
+    else
+        reponseHandle.response_error(2001, responseContext);
 
-    reponseHandle.response_autorization(true, responseContext);
 
     //sql query
+}
+
+void CUserSubCtrl::signUp(const ClientIdentificator& clientIdent, const ClientInformation& clientInfo, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
+{
+
+    SqlSignUp query(clientIdent, clientInfo);
+    if(mSqlController->executeQuery(query))
+    {
+        reponseHandle.response_signUp(query.getResult(), responseContext);
+    }
+    else
+        reponseHandle.response_error(2002, responseContext);
 }
 
 void CUserSubCtrl::removeClient()

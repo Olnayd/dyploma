@@ -23,10 +23,8 @@ public:
     CUserSubCtrl( std::shared_ptr<CSqlSubCtrl> sqlController );
     bool isClientHasPermission(const quint32 clientId, const quint8 persmissions);
 
-    void authorizeClient(const QString& login,
-                         const QString& password,
-                         const CResponseContext& responseContext,
-                         ICourseResponseHandle& reponseHandle);
+    void signIn(const ClientIdentificator& clientIdent, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle);
+    void signUp(const ClientIdentificator& clientIdent, const ClientInformation& clientInfo, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle);
 
 private slots:
     void removeClient();

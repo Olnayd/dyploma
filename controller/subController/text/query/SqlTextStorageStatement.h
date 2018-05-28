@@ -1,7 +1,7 @@
 #ifndef SQLSTATEMENT_H
 #define SQLSTATEMENT_H
 
-#include "SqlQuery.h"
+#include "database/query/SqlQuery.h"
 
 class SqlTextStorageStatement : public SqlQuery<void>
 {

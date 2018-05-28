@@ -3,7 +3,7 @@
 #include <QDebug>
 #include "database/CSqlConstants.h"
 #include "database/query/SqlGetSchemaVersion.h"
-#include "database/query/SqlTextStorageStatement.h"
+#include "query/SqlTextStorageStatement.h"
 
 
 CTextStorageSubCtrl::CTextStorageSubCtrl(std::shared_ptr<CSqlSubCtrl> sqlController)

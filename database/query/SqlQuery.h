@@ -17,15 +17,19 @@ class SqlQuery : private QSqlQuery
 public:
     SqlQuery( EStorage destinationStorage );
     ~SqlQuery( );
+    bool isErrorOccured();
 
+    RETERN_TYPE getResult() const;
+
+protected:
     using QSqlQuery::next;
     using QSqlQuery::finish;
     using QSqlQuery::value;
 
-    RETERN_TYPE getResult() const;
+
 
 private:
-    bool isErrorOccured();
+//    bool isErrorOccured();
 
 
     //called after execution of query

@@ -6,8 +6,8 @@
 #include "common/controller/CController.h"
 #include "subController/CSqlSubCtrl.h"
 #include "subController/CImageStorageSubCtrl.h"
-#include "subController/CTextStorageSubCtrl.h"
-#include "subController/CUserSubCtrl.h"
+#include "subController/text/CTextStorageSubCtrl.h"
+#include "subController/user/CUserSubCtrl.h"
 #include "network/processor/course/CCourseProcessor.hpp"
 #include <QTcpServer>
 
@@ -28,8 +28,8 @@ public:
 
 public:
     virtual void getCourseInfo(const quint32 courseId, const CResponseContext &responseContext) override;
-    virtual void autorization(const QString& login, const QString& password, const CResponseContext& responseContext) override;
-
+    virtual void signIn(const ClientIdentificator &clientIdent, const CResponseContext &responseContext) override;
+    virtual void signUp(const ClientIdentificator &clientIdent, const ClientInformation &clientInfo, const CResponseContext &responseContext) override;
 private:
     void sendToClient(QTcpSocket* pSocket, const QString& str);
 private:

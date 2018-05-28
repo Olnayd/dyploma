@@ -16,12 +16,16 @@ public:
     CCourseProcessor();
     bool start();
 
-    virtual void getCourseInfo(const quint32 courseId, const CResponseContext& responseContext) = 0;
-    virtual void autorization(const QString& login, const QString& password, const CResponseContext& responseContext) = 0;
+    virtual void signIn(const ClientIdentificator& clientIdent, const CResponseContext& responseContext) = 0;
+    virtual void signUp(const ClientIdentificator& clientIdent, const ClientInformation& clientInfo, const CResponseContext& responseContext) = 0;
 
+    virtual void response_signIn(const ClientInformation& clientInfo , const CResponseContext& responseContext) override final;
+    virtual void response_signUp(const bool result, const CResponseContext& responseContext) override final;
+    virtual void response_error(const quint32 result, const CResponseContext& responseContext) override final;
+
+    //just for testing
+    virtual void getCourseInfo(const quint32 courseId, const CResponseContext& responseContext) = 0;
     virtual void response_getCourseInfo(const CResponseContext& responseContext) override final;
-    virtual void response_autorization(const bool result, const CResponseContext& responseContext) override final;
-    virtual void response_error(const quint8 result, const CResponseContext& responseContext) override final;
 
 private:
 

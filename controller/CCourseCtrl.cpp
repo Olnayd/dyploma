@@ -47,8 +47,12 @@ bool CCourseCtrl::prepareShutdown()
 
 }
 
-/*virtual*/ void CCourseCtrl::autorization(const QString& login, const QString& password, const CResponseContext& responseContext)
+/*virtual*/ void CCourseCtrl::signIn(const ClientIdentificator &clientIdent, const CResponseContext &responseContext)
 {
-    mUserController->authorizeClient(login, password, responseContext, *this);
+    mUserController->signIn(clientIdent, responseContext, *this);
 }
 
+/*virtual*/ void CCourseCtrl::signUp(const ClientIdentificator &clientIdent,const ClientInformation& clientInfo, const CResponseContext &responseContext)
+{
+    mUserController->signUp(clientIdent, clientInfo, responseContext, *this);
+}
