@@ -21,11 +21,17 @@ void fillCommonInfoForResponse(QDataStream& dataStream, const CResponseContext& 
     dataStream << responseContext.responseId << responseContext.seqId ;
 }
 
+void fillCommonInfoForError(QDataStream& dataStream, const quint8 error, const CResponseContext& responseContext)
+{
+    dataStream << (quint32)Response_Unknown << responseContext.seqId << error;
+}
+
 ResponseType getResponse(const RequestType requestType)
 {
     switch(requestType)
     {
     case Request_Autorization: return Response_Autorization;
+    case Request_GetCourseInfo: return Response_GetCourseInfo;
     default:                   return Response_Unknown;
     }
 }
@@ -34,7 +40,6 @@ CCourseProcessor::CCourseProcessor()
     : m_ptcpServer (nullptr)
     , m_nNextBlockSize(0)
 {
-
 }
 
 bool CCourseProcessor::start()
@@ -51,6 +56,7 @@ bool CCourseProcessor::start()
                 this,         SLOT(slotNewConnection())
                );
     }
+    qDebug()<< "CCM :: stated";
     return true;
 }
 
@@ -85,7 +91,6 @@ void CCourseProcessor::slotRemoveConnection()
 // ----------------------------------------------------------------------
 void CCourseProcessor::slotReadClient()
 {
-    qDebug()<< "ready read";
     CNetworkClient* pClient = (CNetworkClient*)sender();
 
     quint32 clientId = pClient->getClientId();
@@ -93,18 +98,14 @@ void CCourseProcessor::slotReadClient()
 
     QDataStream in(pClientSocket);
     for(;;){
-        qDebug()<< "m-next_block size";
         if (!m_nNextBlockSize) {
             if (pClientSocket->bytesAvailable() < sizeof(quint16)) {
-                qDebug()<< "sizeof(quint16)";
                 break;
             }
             in >> m_nNextBlockSize;
-            qDebug()<< "in >> m_nNextBlockSize";
             qDebug()<< m_nNextBlockSize;
         }
         if (pClientSocket->bytesAvailable() < m_nNextBlockSize) {
-            qDebug()<< "< m_nNextBlockSize";
             break;
         }
 
@@ -114,12 +115,7 @@ void CCourseProcessor::slotReadClient()
         in >> requestId;
         seqId = getSequenceId();
         sendToClient(pClientSocket, requestId, seqId);
-        CResponseContext responseContext(clientId, getResponse(static_cast<RequestType>(requestId)), seqId);
-
-        qDebug()<< "seqId";
-        qDebug()<< seqId;
-        qDebug()<< "requestId";
-        qDebug()<< requestId;
+        CResponseContext responseContext(mClientList.find(clientId)->second, getResponse(static_cast<RequestType>(requestId)), seqId);
 
         switch (requestId) {
         case Request_Autorization:
@@ -127,10 +123,16 @@ void CCourseProcessor::slotReadClient()
             QString login;
             QString password;
             in >> login >> password;
-            qDebug()<< "start autorization";
+            qDebug()<< "CCM :: autorization( " + login + ", " + password + " )"; ;
             autorization(login, password, responseContext);
-        }
-            break;
+        } break;
+        case Request_GetCourseInfo:
+        {
+            quint32 courseId;
+            in >> courseId;
+            qDebug()<< "CCM :: getCourseInfo( " + QString::number(courseId) + " )";
+            getCourseInfo(courseId, responseContext);
+        } break;
         default:
             break;
         }
@@ -151,7 +153,7 @@ void CCourseProcessor::sendToClient(QTcpSocket* pSocket, const quint32 requestid
     QDataStream out(&arrBlock, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_3);
     out << quint16(0) << requestid << sequenceId;
-
+        quint32 sequence;
     out.device()->seek(0);
     out << quint16(arrBlock.size() - sizeof(quint16));
 
@@ -164,7 +166,7 @@ void CCourseProcessor::response_autorization(const bool result, const CResponseC
 {
     if ( responseContext.responseId != (quint32)Response_Autorization ) ; //TODO: alarn
 
-    auto it = mClientList.find(responseContext.clientId);
+    auto it = mClientList.find(responseContext.clientPtr->getClientId());
     if (it != mClientList.end())
     {
         QTcpSocket* pClientSocket = it->second->getSocket();
@@ -176,6 +178,44 @@ void CCourseProcessor::response_autorization(const bool result, const CResponseC
         fillCommonInfoForResponse(out, responseContext);
 
         out << result;
+        out.device()->seek(0);
+        out << quint16(arrBlock.size() - sizeof(quint16));
+        pClientSocket->write(arrBlock);
+    }
+}
+
+void CCourseProcessor::response_getCourseInfo(const CResponseContext& responseContext)
+{
+    auto it = mClientList.find(responseContext.clientPtr->getClientId());
+    if (it != mClientList.end())
+    {
+        QTcpSocket* pClientSocket = it->second->getSocket();
+        QByteArray  arrBlock;
+        QDataStream out(&arrBlock, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_3);
+        out << quint16(0);
+
+        fillCommonInfoForResponse(out, responseContext);
+
+        out.device()->seek(0);
+        out << quint16(arrBlock.size() - sizeof(quint16));
+        pClientSocket->write(arrBlock);
+    }
+}
+
+void CCourseProcessor::response_error(const quint8 error, const CResponseContext& responseContext)
+{
+    auto it = mClientList.find(responseContext.clientPtr->getClientId());
+    if (it != mClientList.end())
+    {
+        QTcpSocket* pClientSocket = it->second->getSocket();
+        QByteArray  arrBlock;
+        QDataStream out(&arrBlock, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_3);
+        out << quint16(0);
+
+        fillCommonInfoForError(out, error, responseContext);
+
         out.device()->seek(0);
         out << quint16(arrBlock.size() - sizeof(quint16));
         pClientSocket->write(arrBlock);

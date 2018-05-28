@@ -6,7 +6,7 @@
 
 #include <QDebug>
 
-CImageStorageSubCtrl::CImageStorageSubCtrl( std::shared_ptr<CSqlSubController> sqlController)
+CImageStorageSubCtrl::CImageStorageSubCtrl( std::shared_ptr<CSqlSubCtrl> sqlController)
     : mSqlController( sqlController )
 {
 

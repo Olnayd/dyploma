@@ -1,14 +1,15 @@
 #ifndef CRESPONSECONTEXT_H
 #define CRESPONSECONTEXT_H
 
-#include<qtypeinfo.h>
+#include<memory>
+#include "CNetworkClient.hpp"
 
 class CResponseContext
 {
 public:
-    CResponseContext(const quint32 clientId_, const quint32 responseId_, const quint32 seqId_);
+    CResponseContext(const std::shared_ptr<CNetworkClient> clientPtr_, const quint32 responseId_, const quint32 seqId_);
 
-    const quint32 clientId;
+    const std::shared_ptr<CNetworkClient> clientPtr;
     const quint32 responseId;
     const quint32 seqId;
 };

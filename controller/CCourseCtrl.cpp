@@ -8,22 +8,21 @@
 #include <QDebug>
 
 CCourseCtrl::CCourseCtrl( )
-    : mSqlController   ( std::make_shared<CSqlSubController>())
+    : mSqlController   ( std::make_shared<CSqlSubCtrl>())
     , mTextController  ( std::make_shared<CTextStorageSubCtrl>(mSqlController))
     , mImageController ( std::make_shared<CImageStorageSubCtrl>(mSqlController))
+    , mUserController  ( std::make_shared<CUserSubCtrl>(mSqlController))
 {
     addSubCtrl(std::static_pointer_cast<common::controller::CSubController>(mSqlController));
     addSubCtrl(std::static_pointer_cast<common::controller::CSubController>(mTextController));
     addSubCtrl(std::static_pointer_cast<common::controller::CSubController>(mImageController));
+    addSubCtrl(std::static_pointer_cast<common::controller::CSubController>(mUserController));
 
 }
 
 bool CCourseCtrl::init()
 {
-    bool isStarted = start();
-    qDebug() << "is started";
-    qDebug() << isStarted;
-    return true;
+    return start();
 }
 
 const char* CCourseCtrl::getName()
@@ -36,8 +35,20 @@ bool CCourseCtrl::prepareShutdown()
     return true;
 }
 
+/*virtual*/ void CCourseCtrl::getCourseInfo(const quint32 courseId, const CResponseContext& responseContext)
+{
+    if (mUserController->isClientHasPermission( responseContext.clientPtr->getClientId(), 3))
+    {
+        response_getCourseInfo(responseContext);
+    }
+    else
+        response_error(1, responseContext);
+
+
+}
+
 /*virtual*/ void CCourseCtrl::autorization(const QString& login, const QString& password, const CResponseContext& responseContext)
 {
-    response_autorization( true, responseContext);
+    mUserController->authorizeClient(login, password, responseContext, *this);
 }
 

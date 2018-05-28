@@ -14,12 +14,12 @@ CNetworkClient::CNetworkClient(QTcpSocket* socket, const quint32 clientid)
             this,      SLOT(slot_connected()));
 }
 
-QTcpSocket* CNetworkClient::getSocket()
+QTcpSocket* CNetworkClient::getSocket() const
 {
     return mSocket;
 }
 
-quint32 CNetworkClient::getClientId()
+quint32 CNetworkClient::getClientId() const
 {
     return mClientId;
 }

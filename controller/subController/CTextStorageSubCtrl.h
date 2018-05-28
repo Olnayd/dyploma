@@ -7,12 +7,12 @@
 class CTextStorageSubCtrl : public common::controller::CSubController
 {
 public:
-    CTextStorageSubCtrl(std::shared_ptr<CSqlSubController> sqlController);
+    CTextStorageSubCtrl(std::shared_ptr<CSqlSubCtrl> sqlController);
     virtual bool init() override final;
     virtual const char* getName() override final;
     virtual bool prepareShutdown() override final;
 private:
-    std::shared_ptr<CSqlSubController> mSqlController;
+    std::shared_ptr<CSqlSubCtrl> mSqlController;
 };
 
 #endif // CTEXTSTORAGESUBCTRL_H

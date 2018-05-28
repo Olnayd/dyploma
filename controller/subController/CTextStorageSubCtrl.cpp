@@ -6,7 +6,7 @@
 #include "database/query/SqlTextStorageStatement.h"
 
 
-CTextStorageSubCtrl::CTextStorageSubCtrl(std::shared_ptr<CSqlSubController> sqlController)
+CTextStorageSubCtrl::CTextStorageSubCtrl(std::shared_ptr<CSqlSubCtrl> sqlController)
      : mSqlController( sqlController )
 {
 

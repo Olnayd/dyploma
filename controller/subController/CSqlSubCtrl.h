@@ -6,11 +6,11 @@
 #include "database/query/SqlQuery.h"
 #include "common/controller/CSubController.h"
 
-class CSqlSubController : public common::controller::CSubController
+class CSqlSubCtrl : public common::controller::CSubController
 {
 public:
 
-    CSqlSubController();
+    CSqlSubCtrl();
     template<typename T>
     bool executeQuery(SqlQuery<T>& query);
   //  template<typename T>
@@ -27,7 +27,7 @@ private:
 };
 
 template<typename T>
-bool CSqlSubController::executeQuery(SqlQuery<T>& sqlQuery)
+bool CSqlSubCtrl::executeQuery(SqlQuery<T>& sqlQuery)
 {
     QStringList stmtList = sqlQuery.preapareStatement();
     if (stmtList.empty()) return true;

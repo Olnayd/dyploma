@@ -4,7 +4,8 @@
 enum RequestType
 {
     Request_Unknown = 0,
-    Request_Autorization
+    Request_Autorization,
+    Request_GetCourseInfo
 };
 
 #endif // REQUESTTYPE_HPP

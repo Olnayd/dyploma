@@ -8,12 +8,12 @@
 #include "database/connection/EStorage.h"
 #include "database/connection/CDatabaseConnectionFactory.h"
 
-class CSqlSubController;
+class CSqlSubCtrl;
 
 template<typename RETERN_TYPE>
 class SqlQuery : private QSqlQuery
 {
-    friend CSqlSubController;
+    friend CSqlSubCtrl;
 public:
     SqlQuery( EStorage destinationStorage );
     ~SqlQuery( );
@@ -74,7 +74,7 @@ RETERN_TYPE SqlQuery<RETERN_TYPE>::getResult( ) const
 template<>
 class SqlQuery<void> : private QSqlQuery
 {
-        friend CSqlSubController;
+        friend CSqlSubCtrl;
 public:
     SqlQuery( EStorage destinationStorage );
     ~SqlQuery( );

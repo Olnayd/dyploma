@@ -4,19 +4,24 @@
 #include <memory>
 #include <QTcpServer>
 
+#include "ICourseResponseHandle.hpp"
 #include "network/CNetworkClient.hpp"
-#include "network/CResponseContext.hpp"
 
-class CCourseProcessor : public QObject
+class CCourseProcessor
+        : public QObject
+        , public ICourseResponseHandle
 {
     Q_OBJECT
 public:
     CCourseProcessor();
     bool start();
 
+    virtual void getCourseInfo(const quint32 courseId, const CResponseContext& responseContext) = 0;
     virtual void autorization(const QString& login, const QString& password, const CResponseContext& responseContext) = 0;
 
-    void response_autorization(const bool result, const CResponseContext& responseContext);
+    virtual void response_getCourseInfo(const CResponseContext& responseContext) override final;
+    virtual void response_autorization(const bool result, const CResponseContext& responseContext) override final;
+    virtual void response_error(const quint8 result, const CResponseContext& responseContext) override final;
 
 private:
 

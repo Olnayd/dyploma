@@ -7,6 +7,7 @@
 #include "subController/CSqlSubCtrl.h"
 #include "subController/CImageStorageSubCtrl.h"
 #include "subController/CTextStorageSubCtrl.h"
+#include "subController/CUserSubCtrl.h"
 #include "network/processor/course/CCourseProcessor.hpp"
 #include <QTcpServer>
 
@@ -26,15 +27,17 @@ public:
     const char* getName() override;
 
 public:
+    virtual void getCourseInfo(const quint32 courseId, const CResponseContext &responseContext) override;
     virtual void autorization(const QString& login, const QString& password, const CResponseContext& responseContext) override;
 
 private:
     void sendToClient(QTcpSocket* pSocket, const QString& str);
 private:
     QTcpServer* m_ptcpServer;
-    std::shared_ptr<CSqlSubController> mSqlController;
+    std::shared_ptr<CSqlSubCtrl> mSqlController;
     std::shared_ptr<CTextStorageSubCtrl> mTextController;
     std::shared_ptr<CImageStorageSubCtrl> mImageController;
+    std::shared_ptr<CUserSubCtrl> mUserController;
 
 
 

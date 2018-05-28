@@ -4,17 +4,16 @@
 #include <QFileInfo>
 #include <QSqlQuery>
 
-
 #include "database/connection/CDatabaseConnectionFactory.h"
 
-CSqlSubController::CSqlSubController()
+CSqlSubCtrl::CSqlSubCtrl()
     : mConnectionStatus( { ::std::make_pair<EStorage, bool> (EStorage::TEXT_STORAGE, false),
                            ::std::make_pair<EStorage, bool> (EStorage::IMAGE_STORAGE, false)})
 {
 
 }
 
-bool CSqlSubController::init()
+bool CSqlSubCtrl::init()
 {
     for (auto& pair : mConnectionStatus)
     {
@@ -32,7 +31,7 @@ bool CSqlSubController::init()
     return true;
 }
 
-bool CSqlSubController::prepareShutdown()
+bool CSqlSubCtrl::prepareShutdown()
 {
     for (auto& pair : mConnectionStatus)
     {
@@ -42,7 +41,7 @@ bool CSqlSubController::prepareShutdown()
     return true;
 }
 
-const char* CSqlSubController::getName()
+const char* CSqlSubCtrl::getName()
 {
     return "SqlSubController";
 }

@@ -34,15 +34,16 @@ HEADERS += \
     database/query/SqlTextStorageStatement.h \
     database/CSqlConstants.h \
     network/processor/course/CCourseProcessor.hpp \
-    network/CNetworkClient.hpp \
-    CRootComponent.h \
     network/processor/course/RequestType.hpp \
     network/processor/course/ResponseType.hpp \
-    network/CResponseContext.hpp
+    network/CNetworkClient.hpp \
+    network/CResponseContext.hpp \
+    CRootComponent.h \
+    controller/subController/CUserSubCtrl.h \
+    network/processor/course/ICourseResponseHandle.hpp
 
 SOURCES += \
     common/controller/CController.cpp \
-    common/controller/CSqlSubCtrl.cpp \
     common/controller/IController.cpp \
     common/helper/commonhelper.cpp \
     common/job/IJob.cpp \
@@ -50,7 +51,7 @@ SOURCES += \
     common/observer/ISubject.cpp \
     common/version.cpp \
     controller/subController/CImageStorageSubCtrl.cpp \
-    controller/subController/CSqlSubController.cpp \
+    controller/subController/CSqlSubCtrl.cpp \
     controller/subController/CTextStorageSubCtrl.cpp \
     controller/CCourseCtrl.cpp \
     database/connection/CDatabaseConnection.cpp \
@@ -62,7 +63,8 @@ SOURCES += \
     database/CSqlConstants.cpp \
     network/processor/course/CCourseProcessor.cpp \
     network/CNetworkClient.cpp \
+    network/CResponseContext.cpp \
     CRootComponent.cpp \
     main.cpp \
-    network/CResponseContext.cpp
-
+    common/controller/CSubController.cpp \
+    controller/subController/CUserSubCtrl.cpp

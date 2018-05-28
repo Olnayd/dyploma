@@ -11,8 +11,8 @@ public:
     CNetworkClient(QTcpSocket* mSocket, const quint32 clientID);
     ~CNetworkClient();
 
-    QTcpSocket* getSocket();
-    quint32 getClientId();
+    QTcpSocket* getSocket() const;
+    quint32 getClientId() const;
 signals:
     void connected();
     void disconnected();
