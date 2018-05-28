@@ -1,7 +1,8 @@
 #ifndef SQLAUTORIZEUSER_H
 #define SQLAUTORIZEUSER_H
 
-#include "network/processor/course/CourseTypes.h"
+#include "network/processor/course/types/ClientInformation.hpp"
+#include "network/processor/course/types/ClientIdentificator.hpp"
 #include "database/query/SqlQuery.h"
 
 class SqlSignIn : public SqlQuery<ClientInformation>

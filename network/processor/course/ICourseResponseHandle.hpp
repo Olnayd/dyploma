@@ -1,7 +1,9 @@
 #ifndef ICOURSERESPONSEHANDLE_HPP
 #define ICOURSERESPONSEHANDLE_HPP
 
-#include "CourseTypes.h"
+#include "types/ClientIdentificator.hpp"
+#include "types/ClientInformation.hpp"
+#include "types/ErrorType.hpp"
 #include "network/CResponseContext.hpp"
 
 class ICourseResponseHandle
@@ -13,7 +15,7 @@ public:
     virtual void response_getCourseInfo(const CResponseContext& responseContext) = 0;
 
 
-    virtual void response_error(const quint32 errorCode, const CResponseContext& responseContex) = 0;
+    virtual void response_error(const ErrorType errorCode, const CResponseContext& responseContex) = 0;
 };
 
 #endif // ICOURSERESPONSEHANDLE_HPP

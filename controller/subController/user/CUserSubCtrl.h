@@ -6,6 +6,7 @@
 #include "network/CNetworkClient.hpp"
 #include "controller/subController/CSqlSubCtrl.h"
 #include "common/controller/CSubController.h"
+#include "network/processor/course/types/ClientType.hpp"
 
 class CUserSubCtrl
         : public QObject
@@ -21,7 +22,7 @@ private:
 
 public:
     CUserSubCtrl( std::shared_ptr<CSqlSubCtrl> sqlController );
-    bool isClientHasPermission(const quint32 clientId, const quint8 persmissions);
+    bool isClientHasPermission(const quint32 clientId, const ClientType persmissions);
 
     void signIn(const ClientIdentificator& clientIdent, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle);
     void signUp(const ClientIdentificator& clientIdent, const ClientInformation& clientInfo, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle);
@@ -32,20 +33,23 @@ private:
     struct ClientInfo
     {
         ClientInfo(const quint32 clientId)
-            : mClientId(clientId), mClientRights(0) {}
-        void setClientPermissions(const quint8 clientRights)
+            : mClientId(clientId), mClientType(Unknown) {}
+
+        void setClientType(const ClientType type)
         {
-            mClientRights = clientRights;
+            mClientType = type;
         }
 
-        bool isClientHasPermissions(const quint8 rights)
+        bool isClientHasPermissions(const ClientType type)
         {
-            return mClientRights & rights;
+            if (mClientType == Teacher ) return true;
+            if (mClientType == Student && type == Student) return true;
+            return false;
         }
 
     private:
         quint32 mClientId;
-        quint8  mClientRights;
+        ClientType  mClientType;
     };
 
     std::map<quint32, ClientInfo> mClientList;

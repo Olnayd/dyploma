@@ -1,8 +1,8 @@
 #include "CCourseProcessor.hpp"
 
 #include <QDataStream>
-#include"RequestType.hpp"
-#include"ResponseType.hpp"
+#include"types/RequestType.hpp"
+#include"types/ResponseType.hpp"
 
 quint32 getClientId()
 {
@@ -21,7 +21,7 @@ void fillCommonInfoForResponse(QDataStream& dataStream, const CResponseContext& 
     dataStream << responseContext.responseId << responseContext.seqId ;
 }
 
-void fillCommonInfoForError(QDataStream& dataStream, const quint32 error, const CResponseContext& responseContext)
+void fillCommonInfoForError(QDataStream& dataStream, const ErrorType error, const CResponseContext& responseContext)
 {
     dataStream << (quint32)Response_Unknown << responseContext.seqId << error;
 }
@@ -240,7 +240,7 @@ void CCourseProcessor::response_getCourseInfo(const CResponseContext& responseCo
     }
 }
 
-void CCourseProcessor::response_error(const quint32 error, const CResponseContext& responseContext)
+void CCourseProcessor::response_error(const ErrorType error, const CResponseContext& responseContext)
 {
     auto it = mClientList.find(responseContext.clientPtr->getClientId());
     if (it != mClientList.end())

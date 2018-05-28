@@ -2,7 +2,8 @@
 #define SQLADDNEWUSER_H
 
 #include "database/query/SqlQuery.h"
-#include "network/processor/course/CourseTypes.h"
+#include "network/processor/course/types/ClientIdentificator.hpp"
+#include "network/processor/course/types/ClientInformation.hpp"
 
 class SqlSignUp : public SqlQuery<bool>
 {

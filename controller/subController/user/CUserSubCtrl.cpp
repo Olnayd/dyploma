@@ -1,6 +1,7 @@
 #include "CUserSubCtrl.h"
 #include "query/SqlSignIn.hpp"
 #include "query/SqlSignUp.hpp"
+#include "network/processor/course/types/ErrorType.hpp"
 
 CUserSubCtrl::CUserSubCtrl( std::shared_ptr<CSqlSubCtrl> sqlController)
     : mSqlController( sqlController )
@@ -23,7 +24,7 @@ bool CUserSubCtrl::prepareShutdown()
     return true;
 }
 
-bool CUserSubCtrl::isClientHasPermission(const quint32 clientId, const quint8 persmissions)
+bool CUserSubCtrl::isClientHasPermission(const quint32 clientId, const ClientType persmissions)
 {
     auto it = mClientList.find(clientId);
     if (it != mClientList.end())
@@ -46,14 +47,17 @@ void CUserSubCtrl::signIn( const ClientIdentificator& clientIdent,
     {
         mClientList.insert(::std::make_pair(netwClient->getClientId(), ClientInfo(netwClient->getClientId())));
     }
+    it = mClientList.find(netwClient->getClientId());
 
     SqlSignIn query(clientIdent);
     if(mSqlController->executeQuery(query))
     {
-        reponseHandle.response_signIn(query.getResult(), responseContext);
+        ClientInformation info = query.getResult();
+        it->second.setClientType(info.type);
+        reponseHandle.response_signIn(info, responseContext);
     }
     else
-        reponseHandle.response_error(2001, responseContext);
+        reponseHandle.response_error(Error_WTF, responseContext);
 
 
     //sql query
@@ -68,7 +72,7 @@ void CUserSubCtrl::signUp(const ClientIdentificator& clientIdent, const ClientIn
         reponseHandle.response_signUp(query.getResult(), responseContext);
     }
     else
-        reponseHandle.response_error(2002, responseContext);
+        reponseHandle.response_error(Error_WTF, responseContext);
 }
 
 void CUserSubCtrl::removeClient()

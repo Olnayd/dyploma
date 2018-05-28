@@ -7,6 +7,9 @@
 #include "database/connection/CDatabaseConnectionFactory.h"
 #include <QDebug>
 
+#include "network/processor/course/types/ClientType.hpp"
+#include "network/processor/course/types/ErrorType.hpp"
+
 CCourseCtrl::CCourseCtrl( )
     : mSqlController   ( std::make_shared<CSqlSubCtrl>())
     , mTextController  ( std::make_shared<CTextStorageSubCtrl>(mSqlController))
@@ -37,12 +40,12 @@ bool CCourseCtrl::prepareShutdown()
 
 /*virtual*/ void CCourseCtrl::getCourseInfo(const quint32 courseId, const CResponseContext& responseContext)
 {
-    if (mUserController->isClientHasPermission( responseContext.clientPtr->getClientId(), 3))
+    if (mUserController->isClientHasPermission( responseContext.clientPtr->getClientId(), Student ))
     {
         response_getCourseInfo(responseContext);
     }
     else
-        response_error(1, responseContext);
+        response_error(Error_WTF, responseContext);
 
 
 }

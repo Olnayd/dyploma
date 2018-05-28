@@ -21,7 +21,7 @@ public:
 
     virtual void response_signIn(const ClientInformation& clientInfo , const CResponseContext& responseContext) override final;
     virtual void response_signUp(const bool result, const CResponseContext& responseContext) override final;
-    virtual void response_error(const quint32 result, const CResponseContext& responseContext) override final;
+    virtual void response_error(const ErrorType result, const CResponseContext& responseContext) override final;
 
     //just for testing
     virtual void getCourseInfo(const quint32 courseId, const CResponseContext& responseContext) = 0;
