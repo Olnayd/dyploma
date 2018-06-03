@@ -3,7 +3,9 @@
 
 SqlSignIn::SqlSignIn(const ClientIdentificator& clientIdent)
     : SqlQuery<ClientInformation>(TEXT_STORAGE)
+    , mClientDatabaseId(-1)
     , mClientIdent(clientIdent)
+
 {
 
 }
@@ -11,7 +13,7 @@ SqlSignIn::SqlSignIn(const ClientIdentificator& clientIdent)
 QStringList SqlSignIn::preapareStatement()
 {
     QStringList result;
-    result.push_back( QString( " SELECT name, last_name, phone_number, email, address, type FROM User"
+    result.push_back( QString( " SELECT name, last_name, phone_number, email, address, type, id FROM User"
                                " WHERE login ='%1' AND password ='%2';" ).arg(mClientIdent.login)
                                                                         .arg(mClientIdent.password));
     return result;
@@ -32,8 +34,14 @@ ClientInformation SqlSignIn::prepareResultOnSuccess()
         result.email        = value(3).toString();
         result.address      = value(4).toString();
         result.type         = static_cast<ClientType>(value(5).toInt());
+        mClientDatabaseId   = value(6).toInt();
     }
 
     return result;
+}
+
+qint32 SqlSignIn::getClientDatabaseId()
+{
+    return mClientDatabaseId;
 }
 

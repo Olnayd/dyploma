@@ -6,8 +6,11 @@ enum RequestType
     Request_Unknown = 0,
     Request_SignIn,
     Request_SignUp,
-    Request_GetCourseInfo
-
+    Request_GetTopicList,
+    Request_GetCourseList,
+    Request_GetCourseListByFilter,
+    Request_CreateLection,
+    Request_SubscribeOnCourse
 };
 
 #endif // REQUESTTYPE_HPP

@@ -12,6 +12,7 @@ public:
     virtual bool init() override final;
     virtual const char* getName() override final;
     virtual bool prepareShutdown() override final;
+
 private:
     std::shared_ptr<CSqlSubCtrl> mSqlController;
 };

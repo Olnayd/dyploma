@@ -32,7 +32,12 @@ ResponseType getResponse(const RequestType requestType)
     {
     case Request_SignIn: return Response_SignIn;
     case Request_SignUp: return Response_SignUp;
-    case Request_GetCourseInfo: return Response_GetCourseInfo;
+    case Request_GetTopicList:          return Response_GetTopicList;
+    case Request_GetCourseList:         return Response_GetCourseList;
+    case Request_GetCourseListByFilter: return Response_GetCourseList;
+    case Request_CreateLection:                return Response_CreateLection;
+    case Request_SubscribeOnCourse: return Response_SubscribeOnCourse;
+
     default:                   return Response_Unknown;
     }
 }
@@ -119,6 +124,24 @@ void CCourseProcessor::slotReadClient()
         CResponseContext responseContext(mClientList.find(clientId)->second, getResponse(static_cast<RequestType>(requestId)), seqId);
 
         switch (requestId) {
+        case Request_CreateLection:
+        {
+            CourseInformation courseInfo;
+            in >> courseInfo;
+            qDebug()<< "CCM :: createLection( <" + QString::number(courseInfo.id)
+                                                 + ", " + courseInfo.name
+                                                 + ", " + courseInfo.description + "> )";
+            createLection(courseInfo, responseContext);
+        } break;
+        case Request_SubscribeOnCourse:
+        {
+            quint32 courseId;
+            in >> courseId;
+            qDebug()<< "CCM :: subscribeOnCourse( " + QString::number(courseId) + " )";
+            subscribeOnCourse(courseId, responseContext);
+
+        } break;
+
         case Request_SignIn:
         {
             ClientIdentificator clientIdent;
@@ -131,7 +154,7 @@ void CCourseProcessor::slotReadClient()
             ClientIdentificator clientIdent;
             ClientInformation clientInfo;
             in >> clientIdent >> clientInfo;
-            qDebug()<< "CCM :: SingIn( <" + clientIdent.login
+            qDebug()<< "CCM :: SingUp( <" + clientIdent.login
                                           + ", " + clientIdent.password
                                           + ">, <" + clientInfo.name
                                           + ", " + clientInfo.address
@@ -141,24 +164,39 @@ void CCourseProcessor::slotReadClient()
                                           + "> )";
             signUp(clientIdent, clientInfo, responseContext);
         } break;
-        case Request_GetCourseInfo:
+        case Request_GetTopicList:
         {
-            quint32 courseId;
-            in >> courseId;
-            qDebug()<< "CCM :: getCourseInfo( " + QString::number(courseId) + " )";
-            getCourseInfo(courseId, responseContext);
+            qDebug()<< "CCM :: getTopicList( )";
+            getTopicList(responseContext);
+        } break;
+        case Request_GetCourseListByFilter:
+        {
+            CourseListWorkingType workType;
+            CourseListFilter filter;
+            in >> workType >> filter;
+            qDebug()<< "CCM :: getCourseListByFilter( " + QString::number((quint32)workType)
+                                                        + ", <" + QString::number((quint32)filter.filterType)
+                                                        + ","   + QString::number(filter.id)
+                                                        + ">)";
+            getCourseListByFilter(workType, filter, responseContext);
+
+        } break;
+
+
+        case Request_GetCourseList:
+        {
+            CourseListWorkingType workType;
+            in >> workType;
+            qDebug()<< "CCM :: getCourseListByFilter( " + QString::number((quint32)workType)
+                                                        + " )";
+            getCourseList(workType, responseContext);
         } break;
         default:
             break;
         }
 
         m_nNextBlockSize = 0;
-
     }
-
-
-
-
 }
 
 // ----------------------------------------------------------------------
@@ -168,7 +206,6 @@ void CCourseProcessor::sendToClient(QTcpSocket* pSocket, const quint32 requestid
     QDataStream out(&arrBlock, QIODevice::WriteOnly);
     out.setVersion(QDataStream::Qt_5_3);
     out << quint16(0) << requestid << sequenceId;
-        quint32 sequence;
     out.device()->seek(0);
     out << quint16(arrBlock.size() - sizeof(quint16));
 
@@ -177,9 +214,97 @@ void CCourseProcessor::sendToClient(QTcpSocket* pSocket, const quint32 requestid
 
 /////responses
 
+/*virtual*/ void CCourseProcessor::response_subscribeOnCourse(const bool result, const CResponseContext& responseContext)
+{
+    //if ( responseContext.responseId != (quint32)Response_SubscribeOnCourse ) ; //TODO: alarm
+
+    auto it = mClientList.find(responseContext.clientPtr->getClientId());
+    if (it != mClientList.end())
+    {
+        QTcpSocket* pClientSocket = it->second->getSocket();
+        QByteArray  arrBlock;
+        QDataStream out(&arrBlock, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_3);
+        out << quint16(0);
+
+        fillCommonInfoForResponse(out, responseContext);
+
+        out << result;
+        out.device()->seek(0);
+        out << quint16(arrBlock.size() - sizeof(quint16));
+        pClientSocket->write(arrBlock);
+    }
+}
+
+/*virtual*/ void CCourseProcessor::response_createLection( const quint32 courseid, const CResponseContext& responseContext)
+{
+    //if ( responseContext.responseId != (quint32)Response_CreateLection ) ; //TODO: alarm
+
+    auto it = mClientList.find(responseContext.clientPtr->getClientId());
+    if (it != mClientList.end())
+    {
+        QTcpSocket* pClientSocket = it->second->getSocket();
+        QByteArray  arrBlock;
+        QDataStream out(&arrBlock, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_3);
+        out << quint16(0);
+
+        fillCommonInfoForResponse(out, responseContext);
+
+        out << courseid;
+        out.device()->seek(0);
+        out << quint16(arrBlock.size() - sizeof(quint16));
+        pClientSocket->write(arrBlock);
+    }
+}
+
+void CCourseProcessor::response_getTopicList(const QVector<CourseTopic> &topicList, const CResponseContext &responseContext)
+{
+    //if ( responseContext.responseId != (quint32)Response_GetTopicList ) ; //TODO: alarm
+
+    auto it = mClientList.find(responseContext.clientPtr->getClientId());
+    if (it != mClientList.end())
+    {
+        QTcpSocket* pClientSocket = it->second->getSocket();
+        QByteArray  arrBlock;
+        QDataStream out(&arrBlock, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_3);
+        out << quint16(0);
+
+        fillCommonInfoForResponse(out, responseContext);
+
+        out << topicList;
+        out.device()->seek(0);
+        out << quint16(arrBlock.size() - sizeof(quint16));
+        pClientSocket->write(arrBlock);
+    }
+}
+
+void CCourseProcessor::response_getCourseList( const QVector<CourseInformation>& courseList, const CResponseContext& responseContext)
+{
+    //if ( responseContext.responseId != (quint32)Response_GetCourseList ) ; //TODO: alarm
+
+    auto it = mClientList.find(responseContext.clientPtr->getClientId());
+    if (it != mClientList.end())
+    {
+        QTcpSocket* pClientSocket = it->second->getSocket();
+        QByteArray  arrBlock;
+        QDataStream out(&arrBlock, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_3);
+        out << quint16(0);
+
+        fillCommonInfoForResponse(out, responseContext);
+
+        out << courseList;
+        out.device()->seek(0);
+        out << quint16(arrBlock.size() - sizeof(quint16));
+        pClientSocket->write(arrBlock);
+    }
+}
+
 void CCourseProcessor::response_signUp(const bool result, const CResponseContext& responseContext)
 {
-    if ( responseContext.responseId != (quint32)Response_SignUp ) ; //TODO: alarn
+    //if ( responseContext.responseId != (quint32)Response_SignUp ) ; //TODO: alarn
 
     auto it = mClientList.find(responseContext.clientPtr->getClientId());
     if (it != mClientList.end())
@@ -201,7 +326,7 @@ void CCourseProcessor::response_signUp(const bool result, const CResponseContext
 
 void CCourseProcessor::response_signIn(const ClientInformation& clientInfo, const CResponseContext& responseContext)
 {
-    if ( responseContext.responseId != (quint32)Response_SignIn ) ; //TODO: alarn
+    //if ( responseContext.responseId != (quint32)Response_SignIn ) ; //TODO: alarn
 
     auto it = mClientList.find(responseContext.clientPtr->getClientId());
     if (it != mClientList.end())
@@ -215,25 +340,6 @@ void CCourseProcessor::response_signIn(const ClientInformation& clientInfo, cons
         fillCommonInfoForResponse(out, responseContext);
 
         out << clientInfo;
-        out.device()->seek(0);
-        out << quint16(arrBlock.size() - sizeof(quint16));
-        pClientSocket->write(arrBlock);
-    }
-}
-
-void CCourseProcessor::response_getCourseInfo(const CResponseContext& responseContext)
-{
-    auto it = mClientList.find(responseContext.clientPtr->getClientId());
-    if (it != mClientList.end())
-    {
-        QTcpSocket* pClientSocket = it->second->getSocket();
-        QByteArray  arrBlock;
-        QDataStream out(&arrBlock, QIODevice::WriteOnly);
-        out.setVersion(QDataStream::Qt_5_3);
-        out << quint16(0);
-
-        fillCommonInfoForResponse(out, responseContext);
-
         out.device()->seek(0);
         out << quint16(arrBlock.size() - sizeof(quint16));
         pClientSocket->write(arrBlock);

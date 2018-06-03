@@ -6,8 +6,10 @@ enum ResponseType
     Response_Unknown = 1000,
     Response_SignIn,
     Response_SignUp,
-    Response_GetCourseInfo
-
+    Response_GetTopicList,
+    Response_GetCourseList,
+    Response_CreateLection,
+    Response_SubscribeOnCourse
 };
 
 

@@ -1,4 +1,4 @@
-#include "SqlTextStorageStatement.h"
+#include "SqlTextStorageStatement.hpp"
 
 #include <QVariant>
 #include <QDebug>
@@ -13,9 +13,8 @@ SqlTextStorageStatement::SqlTextStorageStatement(EStorage storageType)
 
 QStringList SqlTextStorageStatement::preapareStatement()
 {
-    qDebug() << "SqlTextStorageStatement::preapareStatement";
     QStringList result;
-    result.reserve(3);
+    result.reserve(30);
     result.push_back( QString( "DROP TABLE IF EXISTS Version;" ) );
     result.push_back( QString( "DROP TABLE IF EXISTS User;" ) );
     result.push_back( QString( "DROP TABLE IF EXISTS Topic;" ) );
@@ -89,6 +88,15 @@ QStringList SqlTextStorageStatement::preapareStatement()
              );
 
      result.push_back( QString( "CREATE TABLE IF NOT EXISTS CourseToListener(        \
+                                id_user INTEGER NOT NULL,                            \
+                                id_course INTEGER NOT NULL,                          \
+                                FOREIGN KEY (id_user) REFERENCES User(id),           \
+                                FOREIGN KEY (id_course) REFERENCES Course(id),       \
+                                PRIMARY KEY (id_user, id_course)                     \
+                                );" )
+             );
+
+     result.push_back( QString( "CREATE TABLE IF NOT EXISTS CourseToCreator(         \
                                 id_user INTEGER NOT NULL,                            \
                                 id_course INTEGER NOT NULL,                          \
                                 FOREIGN KEY (id_user) REFERENCES User(id),           \

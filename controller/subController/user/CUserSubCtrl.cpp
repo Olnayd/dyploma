@@ -2,6 +2,7 @@
 #include "query/SqlSignIn.hpp"
 #include "query/SqlSignUp.hpp"
 #include "network/processor/course/types/ErrorType.hpp"
+#include "network/CNetworkClient.hpp"
 
 CUserSubCtrl::CUserSubCtrl( std::shared_ptr<CSqlSubCtrl> sqlController)
     : mSqlController( sqlController )
@@ -34,6 +35,17 @@ bool CUserSubCtrl::isClientHasPermission(const quint32 clientId, const ClientTyp
     return false;
 }
 
+qint32 CUserSubCtrl::getClientDatabaseId(const quint32 clientId)
+{
+    auto it = mClientList.find(clientId);
+    if (it != mClientList.end())
+    {
+        return it->second.getClientDatabaseId();
+    }
+    return -1;
+}
+
+
 void CUserSubCtrl::signIn( const ClientIdentificator& clientIdent,
                            const CResponseContext& responseContext,
                            ICourseResponseHandle& reponseHandle)
@@ -54,6 +66,7 @@ void CUserSubCtrl::signIn( const ClientIdentificator& clientIdent,
     {
         ClientInformation info = query.getResult();
         it->second.setClientType(info.type);
+        it->second.setClientDatabaseId(query.getClientDatabaseId());
         reponseHandle.response_signIn(info, responseContext);
     }
     else

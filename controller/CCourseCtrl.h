@@ -27,7 +27,15 @@ public:
     const char* getName() override;
 
 public:
-    virtual void getCourseInfo(const quint32 courseId, const CResponseContext &responseContext) override;
+    virtual void getTopicList(const CResponseContext& responseContext) override final;
+    virtual void getCourseList( const CourseListWorkingType workType, const CResponseContext& responseContext) override final;
+    virtual void getCourseListByFilter( const CourseListWorkingType workType, const CourseListFilter& filter, const CResponseContext& responseContext) override final;
+
+    virtual void subscribeOnCourse(const quint32 courseid, const CResponseContext& responseContext) override final;
+    virtual void createLection( const CourseInformation& courseInfo, const CResponseContext& responseContext) override final;
+
+
+
     virtual void signIn(const ClientIdentificator &clientIdent, const CResponseContext &responseContext) override;
     virtual void signUp(const ClientIdentificator &clientIdent, const ClientInformation &clientInfo, const CResponseContext &responseContext) override;
 private:

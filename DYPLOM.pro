@@ -21,7 +21,6 @@ HEADERS += \
     common/observer/IObserver.h \
     common/observer/ISubject.h \
     common/version.h \
-    controller/subController/text/query/SqlTextStorageStatement.h \
     controller/subController/text/CTextStorageSubCtrl.h \
     controller/subController/user/query/SqlSignIn.hpp \
     controller/subController/user/query/SqlSignUp.hpp \
@@ -46,7 +45,20 @@ HEADERS += \
     network/CNetworkClient.hpp \
     network/CResponseContext.hpp \
     CRootComponent.h \
-    network/processor/course/types/ErrorType.hpp
+    network/processor/course/types/ErrorType.hpp \
+    network/processor/course/types/CourseListWorkingType.hpp \
+    network/processor/course/types/CourseListFilter.hpp \
+    network/processor/course/types/CourseListFilterType.hpp \
+    network/processor/course/types/CourseInformation.hpp \
+    controller/subController/text/query/SqlGetTopicList.hpp \
+    controller/subController/text/query/SqlTextStorageStatement.hpp \
+    network/processor/course/types/CourseTopic.hpp \
+    controller/subController/text/query/SqlGetAllCourses.hpp \
+    controller/subController/text/query/SqlGetTopicListForCourse.hpp \
+    controller/subController/text/query/SqlGetCourseListWhereUserIsListener.hpp \
+    controller/subController/text/query/SqlGetCourseListWhereUserIsCreator.hpp \
+    controller/subController/text/query/SqlSubscribeOnCourse.h \
+    controller/subController/text/query/SqlCreateLection.hpp
 
 SOURCES += \
     common/controller/CController.cpp \
@@ -79,5 +91,17 @@ SOURCES += \
     network/CResponseContext.cpp \
     CRootComponent.cpp \
     main.cpp \
-    network/processor/course/types/ErrorType.cpp
+    network/processor/course/types/ErrorType.cpp \
+    network/processor/course/types/CourseListWorkingType.cpp \
+    network/processor/course/types/CourseListFilter.cpp \
+    network/processor/course/types/CourseListFilterType.cpp \
+    network/processor/course/types/CourseInformation.cpp \
+    controller/subController/text/query/SqlGetTopicList.cpp \
+    network/processor/course/types/CourseTopic.cpp \
+    controller/subController/text/query/SqlGetAllCourses.cpp \
+    controller/subController/text/query/SqlGetTopicListForCourse.cpp \
+    controller/subController/text/query/SqlGetCourseListWhereUserIsListener.cpp \
+    controller/subController/text/query/SqlGetCourseListWhereUserIsCreator.cpp \
+    controller/subController/text/query/SqlSubscribeOnCourse.cpp \
+    controller/subController/text/query/SqlCreateLection.cpp
 

@@ -14,7 +14,10 @@ private:
     virtual ClientInformation prepareResultOnError() override final;
     virtual ClientInformation prepareResultOnSuccess() override final;
     virtual QStringList preapareStatement() override final;
+public:
+    qint32 getClientDatabaseId();
 private:
+    qint32 mClientDatabaseId;
     ClientIdentificator mClientIdent;
 };
 

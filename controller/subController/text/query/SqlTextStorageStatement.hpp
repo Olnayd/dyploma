@@ -1,5 +1,5 @@
-#ifndef SQLSTATEMENT_H
-#define SQLSTATEMENT_H
+#ifndef SQLTEXTSTORAGESTATEMENT_H
+#define SQLTEXTSTORAGESTATEMENT_H
 
 #include "database/query/SqlQuery.h"
 
@@ -14,4 +14,4 @@ private:
     virtual QStringList preapareStatement() override final;
 };
 
-#endif // SQLSTATEMENT_H
+#endif // SQLTEXTSTORAGESTATEMENT_H

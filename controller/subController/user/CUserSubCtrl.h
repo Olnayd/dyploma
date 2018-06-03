@@ -2,11 +2,10 @@
 #define CUSERSUBCONTROLLER_H
 
 #include <QObject>
-#include "network/processor/course/ICourseResponseHandle.hpp"
-#include "network/CNetworkClient.hpp"
 #include "controller/subController/CSqlSubCtrl.h"
 #include "common/controller/CSubController.h"
 #include "network/processor/course/types/ClientType.hpp"
+#include "network/processor/course/ICourseResponseHandle.hpp"
 
 class CUserSubCtrl
         : public QObject
@@ -22,7 +21,9 @@ private:
 
 public:
     CUserSubCtrl( std::shared_ptr<CSqlSubCtrl> sqlController );
+    qint32 getClientDatabaseId(const quint32 clientId);
     bool isClientHasPermission(const quint32 clientId, const ClientType persmissions);
+
 
     void signIn(const ClientIdentificator& clientIdent, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle);
     void signUp(const ClientIdentificator& clientIdent, const ClientInformation& clientInfo, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle);
@@ -33,22 +34,33 @@ private:
     struct ClientInfo
     {
         ClientInfo(const quint32 clientId)
-            : mClientId(clientId), mClientType(Unknown) {}
+            : mClientId(clientId), mClientDatabaseId(-1), mClientType(Unknown) {}
 
         void setClientType(const ClientType type)
         {
             mClientType = type;
         }
 
-        bool isClientHasPermissions(const ClientType type)
+        void setClientDatabaseId(const quint32 id_)
+        {
+            mClientDatabaseId = id_;
+        }
+
+        bool isClientHasPermissions(const ClientType type) const
         {
             if (mClientType == Teacher ) return true;
             if (mClientType == Student && type == Student) return true;
             return false;
         }
 
+        quint32 getClientDatabaseId() const
+        {
+            return mClientDatabaseId;
+        }
+
     private:
         quint32 mClientId;
+        qint32  mClientDatabaseId;
         ClientType  mClientType;
     };
 
