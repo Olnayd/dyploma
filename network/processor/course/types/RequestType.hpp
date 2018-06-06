@@ -9,8 +9,12 @@ enum RequestType
     Request_GetTopicList,
     Request_GetCourseList,
     Request_GetCourseListByFilter,
+    Request_SubscribeOnCourse,
+    Request_CreateCourse,
     Request_CreateLection,
-    Request_SubscribeOnCourse
+    Request_GetLectionPreviewList,
+    Request_GetLection
+
 };
 
 #endif // REQUESTTYPE_HPP

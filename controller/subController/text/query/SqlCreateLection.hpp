@@ -2,12 +2,12 @@
 #define SQLCREATELECTION_H
 
 #include "database/query/SqlQuery.h"
-#include "network/processor/course/types/CourseInformation.hpp"
+#include "network/processor/course/types/LectionInformation.hpp"
 
 class SqlCreateLection : public SqlQuery<quint32>
 {
 public:
-    SqlCreateLection(const CourseInformation& courseInformation, const quint32 clientdatabaseId);
+    SqlCreateLection(const LectionInformation& lectionInformation, const quint32 courseId);
 
 private:
     virtual quint32 prepareResultOnError() override final;
@@ -15,8 +15,9 @@ private:
     virtual QStringList preapareStatement() override final;
 
 private:
-    CourseInformation mCourseInformation;
-    qint32 mClientDatabaseId;
+    LectionInformation mLectionInformation;
+    quint32 mCourseId;
 };
+
 
 #endif // SQLCREATELECTION_H

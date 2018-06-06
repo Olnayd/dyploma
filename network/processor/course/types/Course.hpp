@@ -6,13 +6,14 @@
 #include <QVector>
 #include <QDataStream>
 
-class CourseInformation
+class Course
 {
 public:
-    CourseInformation() = default;
-    CourseInformation(quint32 id, QString name, QString description);
+    Course() = default;
+    Course(quint32 id, QString name, QString description);
 public:
     quint32 id;
+
     QString name;
     QVector<CourseTopic> topicList;
     QString description;
@@ -21,8 +22,8 @@ public:
 };
 
 
-QDataStream& operator >>(QDataStream& stream, CourseInformation& type);
-QDataStream& operator <<(QDataStream& stream, const CourseInformation& type);
+QDataStream& operator >>(QDataStream& stream, Course& type);
+QDataStream& operator <<(QDataStream& stream, const Course& type);
 
 
 #endif // COURSEINFORMATION_H

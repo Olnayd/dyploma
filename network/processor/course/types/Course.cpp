@@ -1,7 +1,7 @@
-#include "CourseInformation.hpp"
+#include "Course.hpp"
 #include <QDataStream>
 
-CourseInformation::CourseInformation(quint32 id_, QString name_, QString description_)
+Course::Course(quint32 id_, QString name_, QString description_)
     : id(id_)
     , name(name_)
     , topicList()
@@ -11,13 +11,13 @@ CourseInformation::CourseInformation(quint32 id_, QString name_, QString descrip
 
 }
 
-QDataStream& operator >>(QDataStream& stream, CourseInformation& type)
+QDataStream& operator >>(QDataStream& stream, Course& type)
 {
     stream >> type.id >> type.name >> type.description >> type.topicList >> type.rating;
     return stream;
 }
 
-QDataStream& operator <<(QDataStream& stream, const CourseInformation& type)
+QDataStream& operator <<(QDataStream& stream, const Course& type)
 {
     stream << type.id << type.name << type.description << type.topicList << type.rating;
     return stream;

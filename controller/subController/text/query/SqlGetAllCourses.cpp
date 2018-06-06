@@ -1,7 +1,7 @@
 #include "SqlGetAllCourses.hpp"
 
 SqlGetAllCourses::SqlGetAllCourses(const CourseListFilter& filter)
-    : SqlQuery<QVector<CourseInformation>>(TEXT_STORAGE)
+    : SqlQuery<QVector<Course>>(TEXT_STORAGE)
     , mFilter(filter)
 {
 
@@ -14,20 +14,20 @@ QStringList SqlGetAllCourses::preapareStatement()
     return result;
 }
 
-QVector<CourseInformation> SqlGetAllCourses::prepareResultOnError()
+QVector<Course> SqlGetAllCourses::prepareResultOnError()
 {
-    return QVector<CourseInformation>();
+    return QVector<Course>();
 }
 
-QVector<CourseInformation> SqlGetAllCourses::prepareResultOnSuccess()
+QVector<Course> SqlGetAllCourses::prepareResultOnSuccess()
 {
-    QVector<CourseInformation> result;
+    QVector<Course> result;
     while (next())
     {
         quint32 id = value(0).toInt();
         QString name = value(1).toString();
         QString description = value(2).toString();
-        result.push_back(CourseInformation(id, name, description));
+        result.push_back(Course(id, name, description));
     }
     return result;
 }

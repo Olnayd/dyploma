@@ -85,17 +85,45 @@ bool CCourseCtrl::prepareShutdown()
         response_error(Error_WTF, responseContext);
 }
 
-/*virtual*/ void CCourseCtrl::createLection( const CourseInformation& courseInfo, const CResponseContext& responseContext)
+/*virtual*/ void CCourseCtrl::createCourse( const Course& courseInfo, const CResponseContext& responseContext)
 {
     if (mUserController->isClientHasPermission( responseContext.clientPtr->getClientId(), Teacher ))
     {
-        mTextController->createLection(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()), courseInfo, responseContext, *this);
+        mTextController->createCourse(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()), courseInfo, responseContext, *this);
     }
     else
         response_error(Error_WTF, responseContext);
 }
 
+/*virtual*/ void CCourseCtrl::createLection( const quint32 courseid, const LectionInformation& lectionInfo, const CResponseContext& responseContext)
+{
+    if (mUserController->isClientHasPermission( responseContext.clientPtr->getClientId(), Teacher ))
+    {
+        mTextController->createLection(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()), courseid,  lectionInfo, responseContext, *this);
+    }
+    else
+        response_error(Error_WTF, responseContext);
+}
 
+/*virtual*/ void CCourseCtrl::getLection(const quint32 lectionId, const CResponseContext& responseContext)
+{
+    if (mUserController->isClientHasPermission( responseContext.clientPtr->getClientId(), Teacher ))
+    {
+        mTextController->getLection(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()), lectionId, responseContext, *this);
+    }
+    else
+        response_error(Error_WTF, responseContext);
+}
+
+/*virtual*/ void CCourseCtrl::getLectionPreviewList(const quint32 courseid, const CResponseContext& responseContext)
+{
+    if (mUserController->isClientHasPermission( responseContext.clientPtr->getClientId(), Teacher ))
+    {
+        mTextController->getLectionPreviewList(courseid, responseContext, *this );
+    }
+    else
+        response_error(Error_WTF, responseContext);
+}
 
 
 ///*virtual*/ void CCourseCtrl::getCourseInfo(const quint32 courseId, const CResponseContext& responseContext)

@@ -1,7 +1,7 @@
 #include "SqlGetCourseListWhereUserIsListener.hpp"
 
 SqlGetCourseListWhereUserIsListener::SqlGetCourseListWhereUserIsListener(const CourseListFilter& filter, const qint32 clientid)
-    : SqlQuery<QVector<CourseInformation>>(TEXT_STORAGE)
+    : SqlQuery<QVector<Course>>(TEXT_STORAGE)
     , mFilter(filter)
     , mClientId(clientid)
 {
@@ -17,20 +17,20 @@ QStringList SqlGetCourseListWhereUserIsListener::preapareStatement()
     return result;
 }
 
-QVector<CourseInformation> SqlGetCourseListWhereUserIsListener::prepareResultOnError()
+QVector<Course> SqlGetCourseListWhereUserIsListener::prepareResultOnError()
 {
-    return QVector<CourseInformation>();
+    return QVector<Course>();
 }
 
-QVector<CourseInformation> SqlGetCourseListWhereUserIsListener::prepareResultOnSuccess()
+QVector<Course> SqlGetCourseListWhereUserIsListener::prepareResultOnSuccess()
 {
-    QVector<CourseInformation> result;
+    QVector<Course> result;
     while (next())
     {
         quint32 id = value(0).toInt();
         QString name = value(1).toString();
         QString description = value(2).toString();
-        result.push_back(CourseInformation(id, name, description));
+        result.push_back(Course(id, name, description));
     }
     return result;
 }

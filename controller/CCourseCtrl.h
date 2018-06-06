@@ -31,8 +31,14 @@ public:
     virtual void getCourseList( const CourseListWorkingType workType, const CResponseContext& responseContext) override final;
     virtual void getCourseListByFilter( const CourseListWorkingType workType, const CourseListFilter& filter, const CResponseContext& responseContext) override final;
 
+    virtual void getLection(const quint32 lectionId, const CResponseContext& responseContext) override final;
+    virtual void getLectionPreviewList(const quint32 courseid, const CResponseContext& responseContext) override final;
+
+
+
     virtual void subscribeOnCourse(const quint32 courseid, const CResponseContext& responseContext) override final;
-    virtual void createLection( const CourseInformation& courseInfo, const CResponseContext& responseContext) override final;
+    virtual void createCourse( const Course& courseInfo, const CResponseContext& responseContext) override final;
+    virtual void createLection( const quint32 courseid, const LectionInformation& courseInfo, const CResponseContext& responseContext) override final;
 
 
 

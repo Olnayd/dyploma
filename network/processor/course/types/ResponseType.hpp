@@ -8,8 +8,11 @@ enum ResponseType
     Response_SignUp,
     Response_GetTopicList,
     Response_GetCourseList,
+    Response_SubscribeOnCourse,
+    Response_CreateCourse,
     Response_CreateLection,
-    Response_SubscribeOnCourse
+    Response_GetPreviewLectionList,
+    Response_GetLection
 };
 
 

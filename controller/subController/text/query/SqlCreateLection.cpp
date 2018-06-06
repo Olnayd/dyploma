@@ -1,9 +1,9 @@
 #include "SqlCreateLection.hpp"
 
-SqlCreateLection::SqlCreateLection(const CourseInformation& courseInformation, const quint32 clientdatabaseId)
+SqlCreateLection::SqlCreateLection(const LectionInformation& courseInformation, const quint32 courseId)
     : SqlQuery<quint32>(TEXT_STORAGE)
-    , mCourseInformation(courseInformation)
-    , mClientDatabaseId(clientdatabaseId)
+    , mLectionInformation(courseInformation)
+    , mCourseId(courseId)
 {
 
 }
@@ -11,12 +11,13 @@ SqlCreateLection::SqlCreateLection(const CourseInformation& courseInformation, c
 QStringList SqlCreateLection::preapareStatement()
 {
     QStringList result;
-    result.push_back( QString( "INSERT INTO Course(name, description) "
-                               "VALUES (%1,%2); ").arg(mCourseInformation.name)
-                                                  .arg(mCourseInformation.description));
-    result.push_back( QString( "INSERT INTO CourseToListener (id_course, id_user)"
-                               "SELECT last_insert_rowid(), %1;").arg(mClientDatabaseId));
-    result.push_back( QString( "SELECT id_course FROM CourseToListener "
+    result.push_back( QString( "INSERT INTO Course(name, description, data) "
+                               "VALUES (%1,%2,%3); ").arg(mLectionInformation.name)
+                                                     .arg(mLectionInformation.description)
+                                                     .arg(mLectionInformation.data));
+    result.push_back( QString( "INSERT INTO CourseToCreator (id_lection, id_course )"
+                               "SELECT last_insert_rowid(), %1;").arg(mCourseId));
+    result.push_back( QString( "SELECT id_lection FROM CourseToCreator "
                                "WHERE rowid = last_insert_rowid();"));
 
     return result;

@@ -49,7 +49,6 @@ HEADERS += \
     network/processor/course/types/CourseListWorkingType.hpp \
     network/processor/course/types/CourseListFilter.hpp \
     network/processor/course/types/CourseListFilterType.hpp \
-    network/processor/course/types/CourseInformation.hpp \
     controller/subController/text/query/SqlGetTopicList.hpp \
     controller/subController/text/query/SqlTextStorageStatement.hpp \
     network/processor/course/types/CourseTopic.hpp \
@@ -58,7 +57,14 @@ HEADERS += \
     controller/subController/text/query/SqlGetCourseListWhereUserIsListener.hpp \
     controller/subController/text/query/SqlGetCourseListWhereUserIsCreator.hpp \
     controller/subController/text/query/SqlSubscribeOnCourse.h \
-    controller/subController/text/query/SqlCreateLection.hpp
+    network/processor/course/types/LectionInformation.hpp \
+    controller/subController/text/query/SqlCreateCourse.hpp \
+    controller/subController/text/query/SqlCreateLection.hpp \
+    controller/subController/text/query/SqlCheckIsUserCreator.hpp \
+    controller/subController/text/query/SqlCheckIsUserListener.hpp \
+    network/processor/course/types/Course.hpp \
+    network/processor/course/types/LectionPreview.hpp \
+    network/processor/course/types/TestPreview.hpp
 
 SOURCES += \
     common/controller/CController.cpp \
@@ -95,7 +101,6 @@ SOURCES += \
     network/processor/course/types/CourseListWorkingType.cpp \
     network/processor/course/types/CourseListFilter.cpp \
     network/processor/course/types/CourseListFilterType.cpp \
-    network/processor/course/types/CourseInformation.cpp \
     controller/subController/text/query/SqlGetTopicList.cpp \
     network/processor/course/types/CourseTopic.cpp \
     controller/subController/text/query/SqlGetAllCourses.cpp \
@@ -103,5 +108,12 @@ SOURCES += \
     controller/subController/text/query/SqlGetCourseListWhereUserIsListener.cpp \
     controller/subController/text/query/SqlGetCourseListWhereUserIsCreator.cpp \
     controller/subController/text/query/SqlSubscribeOnCourse.cpp \
-    controller/subController/text/query/SqlCreateLection.cpp
+    network/processor/course/types/LectionInformation.cpp \
+    controller/subController/text/query/SqlCreateCourse.cpp \
+    controller/subController/text/query/SqlCreateLection.cpp \
+    controller/subController/text/query/SqlCheckIsUserCreator.cpp \
+    controller/subController/text/query/SqlCheckIsUserListener.cpp \
+    network/processor/course/types/Course.cpp \
+    network/processor/course/types/LectionPreview.cpp \
+    network/processor/course/types/TestPreview.cpp
 

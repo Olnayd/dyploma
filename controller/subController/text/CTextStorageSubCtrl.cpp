@@ -10,7 +10,11 @@
 #include "query/SqlGetCourseListWhereUserIsCreator.hpp"
 #include "query/SqlGetCourseListWhereUserIsListener.hpp"
 #include "query/SqlSubscribeOnCourse.h"
+#include "query/SqlCreateCourse.hpp"
 #include "query/SqlCreateLection.hpp"
+#include "query/SqlCheckIsUserCreator.hpp"
+#include "query/SqlCheckIsUserListener.hpp"
+
 
 
 CTextStorageSubCtrl::CTextStorageSubCtrl(std::shared_ptr<CSqlSubCtrl> sqlController)
@@ -72,7 +76,7 @@ void CTextStorageSubCtrl::getTopicList(const CResponseContext& responseContext, 
 
 void CTextStorageSubCtrl::getCourseListByFilter( const qint32 clientdatabaseid, const CourseListWorkingType workType, const CourseListFilter& filter, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
 {
-    SqlQuery<QVector<CourseInformation>>* queryFetchAllCourses;
+    SqlQuery<QVector<Course>>* queryFetchAllCourses;
     switch(workType)
     {
     case CourseListWorkingType::ALL: queryFetchAllCourses = new SqlGetAllCourses(filter);break;
@@ -82,8 +86,8 @@ void CTextStorageSubCtrl::getCourseListByFilter( const qint32 clientdatabaseid, 
 
     if(mSqlController->executeQuery(*queryFetchAllCourses))
     {
-        QVector<CourseInformation> courseInfoList = queryFetchAllCourses->getResult();
-        for(CourseInformation& course : courseInfoList)
+        QVector<Course> courseInfoList = queryFetchAllCourses->getResult();
+        for(Course& course : courseInfoList)
         {
             SqlGetTopicListForCourse queryTopicListForCourse(course.id);
             if(mSqlController->executeQuery(queryTopicListForCourse))
@@ -108,14 +112,41 @@ void CTextStorageSubCtrl::subscribeOnCourse( const qint32 clientdatabaseid,const
         reponseHandle.response_error(Error_WTF, responseContext);
 }
 
-void CTextStorageSubCtrl::createLection( const qint32 clientdatabaseid, const CourseInformation& courseInfo, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
+void CTextStorageSubCtrl::createCourse( const qint32 clientdatabaseid, const Course& courseInfo, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
 {
-    SqlCreateLection query(courseInfo, clientdatabaseid);
+    SqlCreateCourse query(courseInfo, clientdatabaseid);
     if(mSqlController->executeQuery(query))
     {
-        reponseHandle.response_createLection(query.getResult(), responseContext);
+        reponseHandle.response_createCourse(query.getResult(), responseContext);
     }
     else
         reponseHandle.response_error(Error_WTF, responseContext);
+
+}
+
+void CTextStorageSubCtrl::createLection(const qint32 clientdatabaseid, const quint32 courseid, const LectionInformation& lectionInfo, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
+{
+    SqlCheckIsUserCreator query(clientdatabaseid, courseid);
+    if(mSqlController->executeQuery(query) && query.getResult())
+    {
+        SqlCreateLection queryCreateLection(lectionInfo, courseid);
+        if(mSqlController->executeQuery(queryCreateLection))
+        {
+            reponseHandle.response_createLection(queryCreateLection.getResult(),responseContext);
+        }
+        else
+            reponseHandle.response_error(Error_WTF, responseContext);
+    }
+    else
+        reponseHandle.response_error(Error_WTF, responseContext);
+}
+
+void CTextStorageSubCtrl::getLection( const qint32 clientdatabaseid, const quint32 lectionId, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
+{
+
+}
+
+void CTextStorageSubCtrl::getLectionPreviewList(const quint32 courseid, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
+{
 
 }
