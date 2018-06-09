@@ -64,11 +64,11 @@ QStringList SqlTextStorageStatement::preapareStatement()
                                  );" )
              );
      result.push_back( QString( "CREATE TABLE IF NOT EXISTS Test(                    \
-                                id_lecture INTEGER NOT NULL,                         \
+                                id INTEGER NOT NULL,                                 \
                                 name TEXT,                                           \
                                 data TEXT,                                           \
-                                FOREIGN KEY (id_lecture) REFERENCES Lecture(id),     \
-                                PRIMARY KEY (id_lecture)                             \
+                                FOREIGN KEY (id) REFERENCES Lecture(id),             \
+                                PRIMARY KEY (id)                                     \
                                 );" )
              );
      result.push_back( QString( "CREATE TABLE IF NOT EXISTS Rating(                  \
@@ -123,6 +123,24 @@ QStringList SqlTextStorageStatement::preapareStatement()
                                 FOREIGN KEY (id_course) REFERENCES Course(id),       \
                                 FOREIGN KEY (id_lecture) REFERENCES Lecture(id),     \
                                 PRIMARY KEY (id_course, id_lecture)                  \
+                                );" )
+             );
+
+     result.push_back( QString( "CREATE TABLE IF NOT EXISTS LectureToUser(           \
+                                id_user   INTEGER NOT NULL,                          \
+                                id_lecture INTEGER NOT NULL,                         \
+                                FOREIGN KEY (id_user) REFERENCES User(id),           \
+                                FOREIGN KEY (id_lecture) REFERENCES Lecture(id),     \
+                                PRIMARY KEY (id_user, id_lecture)                    \
+                                );" )
+             );
+
+     result.push_back( QString( "CREATE TABLE IF NOT EXISTS TestToUser(              \
+                                id_user   INTEGER NOT NULL,                          \
+                                id_test    INTEGER NOT NULL,                         \
+                                FOREIGN KEY (id_user) REFERENCES User(id),           \
+                                FOREIGN KEY (id_test) REFERENCES Test(id),           \
+                                PRIMARY KEY (id_user, id_test)                       \
                                 );" )
              );
 

@@ -2,7 +2,7 @@
 
 #include "CRootComponent.h"
 
-#include "controller/CCourseCtrl.h"
+#include "controller/CCourseCtrl.hpp"
 
 enum class EController
 {

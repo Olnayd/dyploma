@@ -1,5 +1,5 @@
-#ifndef CCOURSECTRL_H
-#define CCOURSECTRL_H
+#ifndef CCOURSECTRL_HPP
+#define CCOURSECTRL_HPP
 
 #include <map>
 #include "database/connection/EStorage.h"
@@ -31,15 +31,12 @@ public:
     virtual void getCourseList( const CourseListWorkingType workType, const CResponseContext& responseContext) override final;
     virtual void getCourseListByFilter( const CourseListWorkingType workType, const CourseListFilter& filter, const CResponseContext& responseContext) override final;
 
-    virtual void getLection(const quint32 lectionId, const CResponseContext& responseContext) override final;
-    virtual void getLectionPreviewList(const quint32 courseid, const CResponseContext& responseContext) override final;
-
-
+    virtual void createLecture( const quint32 courseId, const Lecture& lecture, const CResponseContext& responseContext) override final;
+    virtual void getLecture(const quint32 lectureId, const CResponseContext& responseContext) override final;
+    virtual void getLecturePreviewList(const quint32 courseid, const CResponseContext& responseContext) override final;
 
     virtual void subscribeOnCourse(const quint32 courseid, const CResponseContext& responseContext) override final;
     virtual void createCourse( const Course& courseInfo, const CResponseContext& responseContext) override final;
-    virtual void createLection( const quint32 courseid, const LectionInformation& courseInfo, const CResponseContext& responseContext) override final;
-
 
 
     virtual void signIn(const ClientIdentificator &clientIdent, const CResponseContext &responseContext) override;
@@ -57,4 +54,4 @@ private:
 
 };
 
-#endif // CCOURSECTRL_H
+#endif // CCOURSECTRL_HPP

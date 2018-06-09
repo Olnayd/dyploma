@@ -11,9 +11,10 @@ enum RequestType
     Request_GetCourseListByFilter,
     Request_SubscribeOnCourse,
     Request_CreateCourse,
-    Request_CreateLection,
-    Request_GetLectionPreviewList,
-    Request_GetLection
+
+    Request_CreateLecture,
+    Request_GetLecturePreviewList,
+    Request_GetLecture
 
 };
 

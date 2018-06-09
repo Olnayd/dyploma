@@ -11,9 +11,14 @@
 #include "query/SqlGetCourseListWhereUserIsListener.hpp"
 #include "query/SqlSubscribeOnCourse.h"
 #include "query/SqlCreateCourse.hpp"
-#include "query/SqlCreateLection.hpp"
+#include "query/SqlCreateLecture.hpp"
 #include "query/SqlCheckIsUserCreator.hpp"
 #include "query/SqlCheckIsUserListener.hpp"
+#include "query/SqlCoupleLectureToCourse.hpp"
+#include "query/SqlCreateTest.hpp"
+#include "query/SqlGetLecture.hpp"
+#include "query/SqlGetLecturePreviewList.hpp"
+#include "query/SqlCheckIsLectureIsDone.hpp"
 
 
 
@@ -124,15 +129,31 @@ void CTextStorageSubCtrl::createCourse( const qint32 clientdatabaseid, const Cou
 
 }
 
-void CTextStorageSubCtrl::createLection(const qint32 clientdatabaseid, const quint32 courseid, const LectionInformation& lectionInfo, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
+void CTextStorageSubCtrl::createLecture(const qint32 clientDatabaseId, const quint32 courseId, const Lecture& lecture, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
 {
-    SqlCheckIsUserCreator query(clientdatabaseid, courseid);
-    if(mSqlController->executeQuery(query) && query.getResult())
+    SqlCheckIsUserCreator queryIsUserCreator(clientDatabaseId, courseId);
+    if(mSqlController->executeQuery(queryIsUserCreator) && queryIsUserCreator.getResult())
     {
-        SqlCreateLection queryCreateLection(lectionInfo, courseid);
-        if(mSqlController->executeQuery(queryCreateLection))
+        std::shared_ptr<SqlCreateLecture>         queryCreateLecture         = ::std::make_shared<SqlCreateLecture>(lecture);
+        std::shared_ptr<SqlCoupleLectureToCourse> queryCoupleLectureToCourse = ::std::make_shared<SqlCoupleLectureToCourse>(courseId, queryCreateLecture);
+        std::shared_ptr<SqlCreateTest>            queryCreateTest;
+
+        QVector<std::shared_ptr<SqlQuery<quint32>>> toExecute;
+        toExecute.push_back(queryCreateLecture);
+        toExecute.push_back(queryCoupleLectureToCourse);
+
+        if(lecture.__isset.test)
         {
-            reponseHandle.response_createLection(queryCreateLection.getResult(),responseContext);
+            queryCreateTest = ::std::make_shared<SqlCreateTest>(lecture.Test(), queryCreateLecture);
+            toExecute.push_back(queryCreateTest);
+        }
+
+        if(mSqlController->executeQueryList(toExecute))
+        {
+            if(queryCreateLecture->getResult() && queryCoupleLectureToCourse->getResult() && queryCreateTest->getResult())
+                reponseHandle.response_createLecture(true,responseContext);
+            else
+                reponseHandle.response_createLecture(false,responseContext);
         }
         else
             reponseHandle.response_error(Error_WTF, responseContext);
@@ -141,12 +162,45 @@ void CTextStorageSubCtrl::createLection(const qint32 clientdatabaseid, const qui
         reponseHandle.response_error(Error_WTF, responseContext);
 }
 
-void CTextStorageSubCtrl::getLection( const qint32 clientdatabaseid, const quint32 lectionId, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
+void CTextStorageSubCtrl::getLecture( const qint32 clientDatabaseId, const quint32 lectureId, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
 {
+    SqlGetLecture queryGetLecture(lectureId);
+    if(mSqlController->executeQuery(queryGetLecture))
+    {
+        SqlCheckIsLectureIsDone queryCheckIsLectureDone(clientDatabaseId, lectureId);
+        if(mSqlController->executeQuery(queryCheckIsLectureDone))
+        {
+            Lecture result = queryGetLecture.getResult();
+            result.setIsLectureDone(queryCheckIsLectureDone.getResult());
+            reponseHandle.response_getLecture(result, responseContext);
+        }
 
+    }
+    else
+        reponseHandle.response_error(Error_WTF, responseContext);
 }
 
-void CTextStorageSubCtrl::getLectionPreviewList(const quint32 courseid, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
+void CTextStorageSubCtrl::getLecturePreviewList( const qint32 clientDatabaseId, const quint32 courseid, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
 {
+    SqlGetLecturePreviewList queryGetLecturePreviewList(courseid);
+    if(mSqlController->executeQuery(queryGetLecturePreviewList))
+    {
+       bool isErrorOccurs;
+        QVector<Lecture> result = queryGetLecturePreviewList.getResult();
 
+        for (Lecture& lecture : result)
+        {
+            SqlCheckIsLectureIsDone queryCheckIsLectureDone(clientDatabaseId, lecture.IdByRef());
+            if(!mSqlController->executeQuery(queryCheckIsLectureDone))
+            {isErrorOccurs =true; break;}
+            lecture.setIsLectureDone(queryCheckIsLectureDone.getResult());
+        }
+
+        if(isErrorOccurs)
+            reponseHandle.response_error(Error_WTF, responseContext);
+        else
+            reponseHandle.response_getLecturePreviewList(result, responseContext);
+    }
+    else
+        reponseHandle.response_error(Error_WTF, responseContext);
 }

@@ -8,8 +8,8 @@
 #include "types/Course.hpp"
 #include "network/CResponseContext.hpp"
 
-#include "types/LectionInformation.hpp"
-#include "types/LectionPreview.hpp"
+#include "types/Lecture.hpp"
+#include "types/Lecture.hpp"
 
 
 class ICourseResponseHandle
@@ -22,13 +22,14 @@ public:
     virtual void response_getTopicList( const QVector<CourseTopic>& topicList, const CResponseContext& responseContext) = 0;
     virtual void response_getCourseList( const QVector<Course>& courseList, const CResponseContext& responseContext) = 0;
 
-    virtual void response_getLection( const LectionInformation& lection, const CResponseContext& responseContext ) = 0;
-    virtual void response_getLectionPreviewList( const QVector<LectionPreview>& lectionList, const CResponseContext& responseContext ) = 0;
+    virtual void response_createLecture(const bool result, const CResponseContext& responseContext) = 0;
+    virtual void response_getLecture( const Lecture& lecture, const CResponseContext& responseContext ) = 0;
+    virtual void response_getLecturePreviewList( const QVector<Lecture>& lectureList, const CResponseContext& responseContext ) = 0;
 
     virtual void response_subscribeOnCourse(const bool result, const CResponseContext& responseContext) = 0;
 
     virtual void response_createCourse( const quint32 courseid, const CResponseContext& responseContext) = 0;
-    virtual void response_createLection(const quint32 lectionId, const CResponseContext& responseContext) = 0;
+
 
 
 

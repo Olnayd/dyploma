@@ -10,9 +10,10 @@ enum ResponseType
     Response_GetCourseList,
     Response_SubscribeOnCourse,
     Response_CreateCourse,
-    Response_CreateLection,
-    Response_GetPreviewLectionList,
-    Response_GetLection
+
+    Response_CreateLecture,
+    Response_GetLecturePreviewList,
+    Response_GetLecture
 };
 
 

@@ -3,8 +3,8 @@
 
 SqlCheckIsUserListener::SqlCheckIsUserListener(const qint32 clientDatabaseId, const quint32 courseId)
     : SqlQuery<bool>(TEXT_STORAGE)
-    , mCourseId(courseId)
     , mClientDatabaseId(clientDatabaseId)
+    , mCourseId(courseId)
 {
 
 }

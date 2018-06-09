@@ -21,13 +21,25 @@ HEADERS += \
     common/observer/IObserver.h \
     common/observer/ISubject.h \
     common/version.h \
+    controller/subController/text/query/SqlCheckIsUserCreator.hpp \
+    controller/subController/text/query/SqlCheckIsUserListener.hpp \
+    controller/subController/text/query/SqlCoupleLectureToCourse.hpp \
+    controller/subController/text/query/SqlCreateCourse.hpp \
+    controller/subController/text/query/SqlCreateTest.hpp \
+    controller/subController/text/query/SqlGetAllCourses.hpp \
+    controller/subController/text/query/SqlGetCourseListWhereUserIsCreator.hpp \
+    controller/subController/text/query/SqlGetCourseListWhereUserIsListener.hpp \
+    controller/subController/text/query/SqlGetTopicList.hpp \
+    controller/subController/text/query/SqlGetTopicListForCourse.hpp \
+    controller/subController/text/query/SqlSubscribeOnCourse.h \
+    controller/subController/text/query/SqlTextStorageStatement.hpp \
     controller/subController/text/CTextStorageSubCtrl.h \
     controller/subController/user/query/SqlSignIn.hpp \
     controller/subController/user/query/SqlSignUp.hpp \
     controller/subController/user/CUserSubCtrl.h \
     controller/subController/CImageStorageSubCtrl.h \
     controller/subController/CSqlSubCtrl.h \
-    controller/CCourseCtrl.h \
+    controller/CCourseCtrl.hpp \
     database/connection/CDatabaseConnection.h \
     database/connection/CDatabaseConnectionFactory.h \
     database/connection/EStorage.h \
@@ -38,33 +50,25 @@ HEADERS += \
     network/processor/course/types/ClientIdentificator.hpp \
     network/processor/course/types/ClientInformation.hpp \
     network/processor/course/types/ClientType.hpp \
+    network/processor/course/types/Course.hpp \
+    network/processor/course/types/CourseListFilter.hpp \
+    network/processor/course/types/CourseListFilterType.hpp \
+    network/processor/course/types/CourseListWorkingType.hpp \
+    network/processor/course/types/CourseTopic.hpp \
+    network/processor/course/types/ErrorType.hpp \
+    network/processor/course/types/Lecture.hpp \
     network/processor/course/types/RequestType.hpp \
     network/processor/course/types/ResponseType.hpp \
+    network/processor/course/types/Test.hpp \
     network/processor/course/CCourseProcessor.hpp \
     network/processor/course/ICourseResponseHandle.hpp \
     network/CNetworkClient.hpp \
     network/CResponseContext.hpp \
     CRootComponent.h \
-    network/processor/course/types/ErrorType.hpp \
-    network/processor/course/types/CourseListWorkingType.hpp \
-    network/processor/course/types/CourseListFilter.hpp \
-    network/processor/course/types/CourseListFilterType.hpp \
-    controller/subController/text/query/SqlGetTopicList.hpp \
-    controller/subController/text/query/SqlTextStorageStatement.hpp \
-    network/processor/course/types/CourseTopic.hpp \
-    controller/subController/text/query/SqlGetAllCourses.hpp \
-    controller/subController/text/query/SqlGetTopicListForCourse.hpp \
-    controller/subController/text/query/SqlGetCourseListWhereUserIsListener.hpp \
-    controller/subController/text/query/SqlGetCourseListWhereUserIsCreator.hpp \
-    controller/subController/text/query/SqlSubscribeOnCourse.h \
-    network/processor/course/types/LectionInformation.hpp \
-    controller/subController/text/query/SqlCreateCourse.hpp \
-    controller/subController/text/query/SqlCreateLection.hpp \
-    controller/subController/text/query/SqlCheckIsUserCreator.hpp \
-    controller/subController/text/query/SqlCheckIsUserListener.hpp \
-    network/processor/course/types/Course.hpp \
-    network/processor/course/types/LectionPreview.hpp \
-    network/processor/course/types/TestPreview.hpp
+    controller/subController/text/query/SqlCreateLecture.hpp \
+    controller/subController/text/query/SqlGetLecture.hpp \
+    controller/subController/text/query/SqlGetLecturePreviewList.hpp \
+    controller/subController/text/query/SqlCheckIsLectureIsDone.hpp
 
 SOURCES += \
     common/controller/CController.cpp \
@@ -75,6 +79,17 @@ SOURCES += \
     common/job/JobQueue.cpp \
     common/observer/ISubject.cpp \
     common/version.cpp \
+    controller/subController/text/query/SqlCheckIsUserCreator.cpp \
+    controller/subController/text/query/SqlCheckIsUserListener.cpp \
+    controller/subController/text/query/SqlCoupleLectureToCourse.cpp \
+    controller/subController/text/query/SqlCreateCourse.cpp \
+    controller/subController/text/query/SqlCreateTest.cpp \
+    controller/subController/text/query/SqlGetAllCourses.cpp \
+    controller/subController/text/query/SqlGetCourseListWhereUserIsCreator.cpp \
+    controller/subController/text/query/SqlGetCourseListWhereUserIsListener.cpp \
+    controller/subController/text/query/SqlGetTopicList.cpp \
+    controller/subController/text/query/SqlGetTopicListForCourse.cpp \
+    controller/subController/text/query/SqlSubscribeOnCourse.cpp \
     controller/subController/text/query/SqlTextStorageStatement.cpp \
     controller/subController/text/CTextStorageSubCtrl.cpp \
     controller/subController/user/query/SqlSignIn.cpp \
@@ -92,28 +107,20 @@ SOURCES += \
     network/processor/course/types/ClientIdentificator.cpp \
     network/processor/course/types/ClientInformation.cpp \
     network/processor/course/types/ClientType.cpp \
+    network/processor/course/types/Course.cpp \
+    network/processor/course/types/CourseListFilter.cpp \
+    network/processor/course/types/CourseListFilterType.cpp \
+    network/processor/course/types/CourseListWorkingType.cpp \
+    network/processor/course/types/CourseTopic.cpp \
+    network/processor/course/types/ErrorType.cpp \
+    network/processor/course/types/Lecture.cpp \
+    network/processor/course/types/Test.cpp \
     network/processor/course/CCourseProcessor.cpp \
     network/CNetworkClient.cpp \
     network/CResponseContext.cpp \
     CRootComponent.cpp \
     main.cpp \
-    network/processor/course/types/ErrorType.cpp \
-    network/processor/course/types/CourseListWorkingType.cpp \
-    network/processor/course/types/CourseListFilter.cpp \
-    network/processor/course/types/CourseListFilterType.cpp \
-    controller/subController/text/query/SqlGetTopicList.cpp \
-    network/processor/course/types/CourseTopic.cpp \
-    controller/subController/text/query/SqlGetAllCourses.cpp \
-    controller/subController/text/query/SqlGetTopicListForCourse.cpp \
-    controller/subController/text/query/SqlGetCourseListWhereUserIsListener.cpp \
-    controller/subController/text/query/SqlGetCourseListWhereUserIsCreator.cpp \
-    controller/subController/text/query/SqlSubscribeOnCourse.cpp \
-    network/processor/course/types/LectionInformation.cpp \
-    controller/subController/text/query/SqlCreateCourse.cpp \
-    controller/subController/text/query/SqlCreateLection.cpp \
-    controller/subController/text/query/SqlCheckIsUserCreator.cpp \
-    controller/subController/text/query/SqlCheckIsUserListener.cpp \
-    network/processor/course/types/Course.cpp \
-    network/processor/course/types/LectionPreview.cpp \
-    network/processor/course/types/TestPreview.cpp
-
+    controller/subController/text/query/SqlCreateLecture.cpp \
+    controller/subController/text/query/SqlGetLecture.cpp \
+    controller/subController/text/query/SqlGetLecturePreviewList.cpp \
+    controller/subController/text/query/SqlCheckIsLectureIsDone.cpp

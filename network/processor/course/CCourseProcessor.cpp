@@ -36,10 +36,10 @@ ResponseType getResponse(const RequestType requestType)
     case Request_GetCourseList:         return Response_GetCourseList;
     case Request_GetCourseListByFilter: return Response_GetCourseList;
     case Request_CreateCourse:          return Response_CreateCourse;
-    case Request_CreateLection:         return Response_CreateLection;
     case Request_SubscribeOnCourse:     return Response_SubscribeOnCourse;
-    case Request_GetLectionPreviewList: return Response_GetPreviewLectionList;
-    case Request_GetLection:            return Response_GetLection;
+    case Request_CreateLecture:         return Response_CreateLecture;
+    case Request_GetLecturePreviewList: return Response_GetLecturePreviewList;
+    case Request_GetLecture:            return Response_GetLecture;
     default:                            return Response_Unknown;
     }
 }
@@ -126,32 +126,32 @@ void CCourseProcessor::slotReadClient()
         CResponseContext responseContext(mClientList.find(clientId)->second, getResponse(static_cast<RequestType>(requestId)), seqId);
 
         switch (requestId) {
-        case Request_GetLectionPreviewList:
+        case Request_GetLecturePreviewList:
         {
             quint32 courseId;
             in >> courseId;
-            qDebug()<< "CCM :: getLectionPreviewList( " + QString::number(courseId) + " )";
-            getLectionPreviewList(courseId, responseContext);
+            qDebug()<< "CCM :: getLecturePreviewList( " + QString::number(courseId) + " )";
+            getLecturePreviewList(courseId, responseContext);
 
         } break;
 
-        case Request_GetLection:
+        case Request_GetLecture:
         {
-            quint32 lectionId;
-            in >> lectionId;
-            qDebug()<< "CCM :: getLection( " + QString::number(lectionId) + " )";
-            getLection(lectionId, responseContext);
+            quint32 lectureId;
+            in >> lectureId;
+            qDebug()<< "CCM :: getLecture( " + QString::number(lectureId) + " )";
+            getLecture(lectureId, responseContext);
 
         } break;
 
-        case Request_CreateLection:
+        case Request_CreateLecture:
         {
             quint32 courseId;
-            LectionInformation lectionInfo;
-            in >> courseId >> lectionInfo;
-            qDebug()<< "CCM :: createLection( <" + lectionInfo.name
-                                                 + ", " + lectionInfo.description + "> )";
-            createLection(courseId, lectionInfo, responseContext);
+            Lecture lecture;
+            in >> courseId >> lecture;
+            qDebug()<< "CCM :: createLecture( <" + lecture.NameByRef()
+                                                 + "> )";
+            createLecture(courseId, lecture, responseContext);
         } break;
 
         case Request_CreateCourse:
@@ -242,7 +242,7 @@ void CCourseProcessor::sendToClient(QTcpSocket* pSocket, const quint32 requestid
 
 /////responses
 
-/*virtual*/ void CCourseProcessor::response_getLection( const LectionInformation& lection, const CResponseContext& responseContext )
+/*virtual*/ void CCourseProcessor::response_getLecture( const Lecture& lecture, const CResponseContext& responseContext )
 {
     //if ( responseContext.responseId != (quint32)Response_SubscribeOnCourse ) ; //TODO: alarm
 
@@ -257,14 +257,14 @@ void CCourseProcessor::sendToClient(QTcpSocket* pSocket, const quint32 requestid
 
         fillCommonInfoForResponse(out, responseContext);
 
-        out << lection;
+        out << lecture;
         out.device()->seek(0);
         out << quint16(arrBlock.size() - sizeof(quint16));
         pClientSocket->write(arrBlock);
     }
 }
 
-/*virtual*/ void CCourseProcessor::response_getLectionPreviewList( const QVector<LectionPreview>& lectionList, const CResponseContext& responseContext )
+/*virtual*/ void CCourseProcessor::response_getLecturePreviewList( const QVector<Lecture>& lectionList, const CResponseContext& responseContext )
 {
     //if ( responseContext.responseId != (quint32)Response_SubscribeOnCourse ) ; //TODO: alarm
 
@@ -330,7 +330,7 @@ void CCourseProcessor::sendToClient(QTcpSocket* pSocket, const quint32 requestid
     }
 }
 
-/*virtual*/ void CCourseProcessor::response_createLection(const quint32 lectionId, const CResponseContext& responseContext)
+/*virtual*/ void CCourseProcessor::response_createLecture(const bool result, const CResponseContext& responseContext)
 {
     auto it = mClientList.find(responseContext.clientPtr->getClientId());
     if (it != mClientList.end())
@@ -343,7 +343,7 @@ void CCourseProcessor::sendToClient(QTcpSocket* pSocket, const quint32 requestid
 
         fillCommonInfoForResponse(out, responseContext);
 
-        out << lectionId;
+        out << result;
         out.device()->seek(0);
         out << quint16(arrBlock.size() - sizeof(quint16));
         pClientSocket->write(arrBlock);
