@@ -25,6 +25,16 @@ bool CUserSubCtrl::prepareShutdown()
     return true;
 }
 
+ClientType CUserSubCtrl::getClientType(const quint32 clientId)
+{
+    auto it = mClientList.find(clientId);
+    if (it != mClientList.end())
+    {
+        return it->second.getClientType();
+    }
+    return ClientType::Unknown;
+}
+
 bool CUserSubCtrl::isClientHasPermission(const quint32 clientId, const ClientType persmissions)
 {
     auto it = mClientList.find(clientId);

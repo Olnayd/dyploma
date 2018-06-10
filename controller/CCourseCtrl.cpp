@@ -104,12 +104,36 @@ bool CCourseCtrl::prepareShutdown()
     else
         response_error(Error_WTF, responseContext);
 }
+/*virtual*/ void CCourseCtrl::createTest( const quint32 lectureId, const Test& test, const CResponseContext& responseContext)
+{
+    if (mUserController->isClientHasPermission( responseContext.clientPtr->getClientId(), Teacher ))
+    {
+       mTextController->createTest(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()),lectureId,  test, responseContext, *this);
+    }
+    else
+        response_error(Error_WTF, responseContext);
+}
+
+/*virtual*/ void CCourseCtrl::getTest(const quint32 lectureId, const CResponseContext& responseContext)
+{
+    if (mUserController->isClientHasPermission( responseContext.clientPtr->getClientId(), Student ))
+    {
+        mTextController->getTest(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()),
+                                 mUserController->getClientType(responseContext.clientPtr->getClientId()),
+                                 lectureId, responseContext, *this);
+    }
+    else
+        response_error(Error_WTF, responseContext);
+
+}
+
 
 /*virtual*/ void CCourseCtrl::getLecture(const quint32 lectureId, const CResponseContext& responseContext)
 {
     if (mUserController->isClientHasPermission( responseContext.clientPtr->getClientId(), Teacher ))
     {
-        mTextController->getLecture(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()), lectureId, responseContext, *this);
+        mTextController->getLecture(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()),
+                                    mUserController->getClientType(responseContext.clientPtr->getClientId()),lectureId, responseContext, *this);
     }
     else
         response_error(Error_WTF, responseContext);
@@ -119,7 +143,8 @@ bool CCourseCtrl::prepareShutdown()
 {
     if (mUserController->isClientHasPermission( responseContext.clientPtr->getClientId(), Teacher ))
     {
-        mTextController->getLecturePreviewList(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()), courseId, responseContext, *this );
+        mTextController->getLecturePreviewList(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()),
+                                               mUserController->getClientType(responseContext.clientPtr->getClientId()), courseId, responseContext, *this );
     }
     else
         response_error(Error_WTF, responseContext);

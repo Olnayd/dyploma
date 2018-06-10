@@ -3,13 +3,13 @@
 
 #include "SqlCreateLecture.hpp"
 #include "database/query/SqlQuery.h"
-#include "network/processor/course/types/Test.hpp"
+#include "network/processor/course/types/test/Test.hpp"
 
 class SqlCreateTest : public SqlQuery<quint32>
 {
 public:
-    SqlCreateTest(const Test& test, const quint32 lectureId);
-    SqlCreateTest(const Test& test, ::std::shared_ptr<SqlCreateLecture> queryCreateLecture);
+    SqlCreateTest(const Test& test, const QString data, const quint32 lectureId);
+    SqlCreateTest(const Test& test, const QString data, ::std::shared_ptr<SqlCreateLecture> queryCreateLecture);
 
 private:
     virtual quint32 prepareResultOnError() override final;
@@ -18,6 +18,7 @@ private:
 
 private:
     Test mTest;
+    QString mData;
     quint32 mLectureId;
     ::std::shared_ptr<SqlCreateLecture> mQueryCreateLecture;
 

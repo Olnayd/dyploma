@@ -126,6 +126,26 @@ void CCourseProcessor::slotReadClient()
         CResponseContext responseContext(mClientList.find(clientId)->second, getResponse(static_cast<RequestType>(requestId)), seqId);
 
         switch (requestId) {
+        case Request_CreateTest:
+        {
+            quint32 lectureId;
+            Test test;
+            in >> lectureId >> test;
+            qDebug()<< "CCM :: createTest( " + QString::number(lectureId)
+                                             + ", Test<" + QString::number(test.Id())
+                                             + ", " + test.Name()
+                                             +  ")";
+            createTest(lectureId, test, responseContext);
+        } break;
+        case Request_GetTest:
+        {
+            quint32 lectureId;
+            in >> lectureId;
+            qDebug()<< "CCM :: getTest( " + QString::number(lectureId)
+                                          +  ")";
+            getTest(lectureId, responseContext);
+        } break;
+
         case Request_GetLecturePreviewList:
         {
             quint32 courseId;
@@ -308,6 +328,51 @@ void CCourseProcessor::sendToClient(QTcpSocket* pSocket, const quint32 requestid
     }
 }
 
+/*virtual*/ void CCourseProcessor::response_createTest(const bool result, const CResponseContext& responseContext)
+{
+
+    //if ( responseContext.responseId != (quint32)Response_CreateLection ) ; //TODO: alarm
+
+    auto it = mClientList.find(responseContext.clientPtr->getClientId());
+    if (it != mClientList.end())
+    {
+        QTcpSocket* pClientSocket = it->second->getSocket();
+        QByteArray  arrBlock;
+        QDataStream out(&arrBlock, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_3);
+        out << quint16(0);
+
+        fillCommonInfoForResponse(out, responseContext);
+
+        out << result;
+        out.device()->seek(0);
+        out << quint16(arrBlock.size() - sizeof(quint16));
+        pClientSocket->write(arrBlock);
+    }
+}
+
+/*virtual*/ void CCourseProcessor::response_getTest( const Test& test, const CResponseContext& responseContext )
+{
+    //if ( responseContext.responseId != (quint32)Response_CreateLection ) ; //TODO: alarm
+
+    auto it = mClientList.find(responseContext.clientPtr->getClientId());
+    if (it != mClientList.end())
+    {
+        QTcpSocket* pClientSocket = it->second->getSocket();
+        QByteArray  arrBlock;
+        QDataStream out(&arrBlock, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_3);
+        out << quint16(0);
+
+        fillCommonInfoForResponse(out, responseContext);
+
+        out << test;
+        out.device()->seek(0);
+        out << quint16(arrBlock.size() - sizeof(quint16));
+        pClientSocket->write(arrBlock);
+    }
+}
+
 /*virtual*/ void CCourseProcessor::response_createCourse( const quint32 courseid, const CResponseContext& responseContext)
 {
     //if ( responseContext.responseId != (quint32)Response_CreateLection ) ; //TODO: alarm
@@ -396,6 +461,16 @@ void CCourseProcessor::response_getTopicList(const QVector<CourseTopic> &topicLi
 void CCourseProcessor::response_getCourseList( const QVector<Course>& courseList, const CResponseContext& responseContext)
 {
     //if ( responseContext.responseId != (quint32)Response_GetCourseList ) ; //TODO: alarm
+
+    qDebug()<< "CCM :: Response_getCourseList( )";
+    for(const Course& course : courseList)
+    {
+        qDebug() << " ====> Course (" + QString::number(course.id)
+                                              + ", " + course.name
+                                              + ", " + course.description
+                                              + ")";
+    }
+
 
     auto it = mClientList.find(responseContext.clientPtr->getClientId());
     if (it != mClientList.end())

@@ -1,6 +1,6 @@
-#include "SqlCheckIsUserCreator.hpp"
+#include "SqlCheckIsUserCreatorByCourseId.hpp"
 
-SqlCheckIsUserCreator::SqlCheckIsUserCreator(const qint32 clientDatabaseId, const quint32 courseId)
+SqlCheckIsUserCreatorByCourseId::SqlCheckIsUserCreatorByCourseId(const qint32 clientDatabaseId, const quint32 courseId)
     : SqlQuery<bool>(TEXT_STORAGE)
     , mClientDatabaseId(clientDatabaseId)
     , mCourseId(courseId)
@@ -8,7 +8,7 @@ SqlCheckIsUserCreator::SqlCheckIsUserCreator(const qint32 clientDatabaseId, cons
 
 }
 
-QStringList SqlCheckIsUserCreator::preapareStatement()
+QStringList SqlCheckIsUserCreatorByCourseId::preapareStatement()
 {
     QStringList result;
     result.push_back( QString( "SELECT id_course, id_user FROM CourseToCreator "
@@ -18,12 +18,12 @@ QStringList SqlCheckIsUserCreator::preapareStatement()
     return result;
 }
 
-bool SqlCheckIsUserCreator::prepareResultOnError()
+bool SqlCheckIsUserCreatorByCourseId::prepareResultOnError()
 {
      return false;
 }
 
-bool SqlCheckIsUserCreator::prepareResultOnSuccess()
+bool SqlCheckIsUserCreatorByCourseId::prepareResultOnSuccess()
 {
     return next();
 }

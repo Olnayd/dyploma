@@ -3,7 +3,7 @@
 
 #include <QVector>
 #include "database/query/SqlQuery.h"
-#include "network/processor/course/types/CourseTopic.hpp"
+#include "network/processor/course/types/course/CourseTopic.hpp"
 
 class SqlGetTopicList : public SqlQuery<QVector<CourseTopic>>
 {

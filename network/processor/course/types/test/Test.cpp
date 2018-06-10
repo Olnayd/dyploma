@@ -23,19 +23,19 @@ Test::Test(const quint32 id, const QString& name, const qreal evaluation)
 }
 
 
-Test::Test(const quint32 id, const QString& name, const QString& data)
+Test::Test(const quint32 id, const QString& name, const QVector<TestQuestion>& questionList)
     : mId(id)
     , mName(name)
-    , mData(data)
+    , mQuestionList(questionList)
     , __isset{true, true, true, false}
 {
 
 }
 
-Test::Test(const quint32 id, const QString& name, const QString& data, const qreal evaluation)
+Test::Test(const quint32 id, const QString& name, const QVector<TestQuestion>& questionList, const qreal evaluation)
     : mId(id)
     , mName(name)
-    , mData(data)
+    , mQuestionList(questionList)
     , mEvaluation(evaluation)
     , __isset{true, true, true, true}
 {
@@ -49,9 +49,9 @@ QString Test::Name()const
 {
     return mName;
 }
-QString Test::Data() const
+QVector<TestQuestion> Test::QuestionList() const
 {
-    return mData;
+    return mQuestionList;
 }
 qreal Test::Evaluation() const
 {
@@ -66,9 +66,9 @@ const QString& Test::NameByRef() const
 {
     return mName;
 }
-const QString& Test::DataByRef() const
+const QVector<TestQuestion>& Test::QuestionListByRef() const
 {
-    return mData;
+    return mQuestionList;
 }
 const qreal& Test::EvaluationByRef() const
 {
@@ -81,10 +81,10 @@ void Test::setName(const QString& name)
     mName = name;
 }
 
-void Test::setData(const QString& data)
+void Test::setQuestionList(const QVector<TestQuestion>& questionList)
 {
-    __isset.data = true;
-    mData = data;
+    __isset.questionList = true;
+    mQuestionList = questionList;
 }
 
 void Test::setEvaluation(const qreal evaluation)
@@ -102,26 +102,26 @@ void Test::setId(const quint32 id)
 
 QDataStream& operator >>(QDataStream& stream, Test& type)
 {
-    stream  >> type.__isset.data
+    stream  >> type.__isset.questionList
             >> type.__isset.evaluation
             >> type.__isset.id
             >> type.__isset.name
             >> type.mId
             >> type.mName
-            >> type.mData
+            >> type.mQuestionList
             >> type.mEvaluation;
     return stream;
 }
 
 QDataStream& operator <<(QDataStream& stream, const Test& type)
 {
-    stream  << type.__isset.data
+    stream  << type.__isset.questionList
             << type.__isset.evaluation
             << type.__isset.id
             << type.__isset.name
             << type.mId
             << type.mName
-            << type.mData
+            << type.mQuestionList
             << type.mEvaluation;
     return stream;
 }

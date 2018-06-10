@@ -13,11 +13,11 @@ QStringList SqlCreateCourse::preapareStatement()
 {
     QStringList result;
     result.push_back( QString( "INSERT INTO Course(name, description) "
-                               "VALUES (%1,%2); ").arg(mCourseInformation.name)
+                               "VALUES ('%1','%2'); ").arg(mCourseInformation.name)
                                                   .arg(mCourseInformation.description));
-    result.push_back( QString( "INSERT INTO CourseToListener (id_course, id_user)"
+    result.push_back( QString( "INSERT INTO CourseToCreator (id_course, id_user)"
                                "SELECT last_insert_rowid(), %1;").arg(mClientDatabaseId));
-    result.push_back( QString( "SELECT id_course FROM CourseToListener "
+    result.push_back( QString( "SELECT id_course FROM CourseToCreator "
                                "WHERE rowid = last_insert_rowid();"));
 
     return result;

@@ -2,7 +2,7 @@
 #define SQLCREATECOURSE_H
 
 #include "database/query/SqlQuery.h"
-#include "network/processor/course/types/Course.hpp"
+#include "network/processor/course/types/course/Course.hpp"
 
 class SqlCreateCourse : public SqlQuery<quint32>
 {

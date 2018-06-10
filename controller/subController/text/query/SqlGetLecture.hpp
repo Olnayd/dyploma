@@ -2,7 +2,7 @@
 #define SQLGETLECTION_H
 
 #include "database/query/SqlQuery.h"
-#include "network/processor/course/types/Lecture.hpp"
+#include "network/processor/course/types/lecture/Lecture.hpp"
 
 
 class SqlGetLecture : public SqlQuery<Lecture>
@@ -17,6 +17,8 @@ private:
 
 private:
     quint32 mLectureId;
+public:
+    QString testData;
 };
 
 

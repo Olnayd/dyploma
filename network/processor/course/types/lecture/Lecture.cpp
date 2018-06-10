@@ -20,9 +20,9 @@ Lecture::Lecture(const quint32 id, const QString& name, const QString& data)
     , mData(data)
     , mIsLectureDone (false)
     , mTest()
-    ,  __isset{false, // id
-               false, // name
-               false, // data
+    ,  __isset{true, // id
+               true, // name
+               true, // data
                false, // isLectureDone
                false} // test
 {

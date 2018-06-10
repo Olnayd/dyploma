@@ -11,7 +11,7 @@ QStringList SqlCreateLecture::preapareStatement()
 {
     QStringList result;
     result.push_back( QString( "INSERT INTO Lecture(name, data) "
-                               "VALUES (%1,%2); ").arg(mLecture.NameByRef())
+                               "VALUES ('%1','%2'); ").arg(mLecture.NameByRef())
                                                   .arg(mLecture.DataByRef()));
     result.push_back( QString( "SELECT last_insert_rowid();"));
 

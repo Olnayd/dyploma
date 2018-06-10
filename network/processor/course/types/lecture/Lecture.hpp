@@ -2,7 +2,7 @@
 #define LECTIONPREVIEW_H
 
 #include <QDataStream>
-#include "Test.hpp"
+#include "../test/Test.hpp"
 
 class Lecture
 {

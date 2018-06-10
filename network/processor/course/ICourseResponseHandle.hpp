@@ -4,12 +4,12 @@
 #include "types/ClientIdentificator.hpp"
 #include "types/ClientInformation.hpp"
 #include "types/ErrorType.hpp"
-#include "types/CourseTopic.hpp"
-#include "types/Course.hpp"
+#include "types/course/CourseTopic.hpp"
+#include "types/course/Course.hpp"
 #include "network/CResponseContext.hpp"
 
-#include "types/Lecture.hpp"
-#include "types/Lecture.hpp"
+#include "types/lecture/Lecture.hpp"
+#include "types/lecture/Lecture.hpp"
 
 
 class ICourseResponseHandle
@@ -23,6 +23,9 @@ public:
     virtual void response_getCourseList( const QVector<Course>& courseList, const CResponseContext& responseContext) = 0;
 
     virtual void response_createLecture(const bool result, const CResponseContext& responseContext) = 0;
+    virtual void response_createTest(const bool result, const CResponseContext& responseContext) = 0;
+
+    virtual void response_getTest( const Test& test, const CResponseContext& responseContext ) = 0;
     virtual void response_getLecture( const Lecture& lecture, const CResponseContext& responseContext ) = 0;
     virtual void response_getLecturePreviewList( const QVector<Lecture>& lectureList, const CResponseContext& responseContext ) = 0;
 

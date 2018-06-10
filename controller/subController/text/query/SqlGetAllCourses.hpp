@@ -2,8 +2,8 @@
 #define SQLGETALLCOURSES_H
 
 #include "database/query/SqlQuery.h"
-#include "network/processor/course/types/CourseListFilter.hpp"
-#include "network/processor/course/types/Course.hpp"
+#include "network/processor/course/types/course/CourseListFilter.hpp"
+#include "network/processor/course/types/course/Course.hpp"
 
 class SqlGetAllCourses : public SqlQuery<QVector<Course>>
 {

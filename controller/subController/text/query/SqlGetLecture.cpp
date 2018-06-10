@@ -13,7 +13,7 @@ QStringList SqlGetLecture::preapareStatement()
     QStringList result;
     result.push_back( QString( " SELECT Lecture.id, Lecture.name, Lecture.data,"
                                " CASE WHEN Test.id IS NULL THEN 0 ELSE 1 END AS IsTestExist, "
-                               " Test.id, Test.name "
+                               " Test.id, Test.name, Test.data"
                                " FROM Lecture "
                                " LEFT JOIN Test on Lecture.id  = Test.id "
                                " WHERE Lecture.id = %1 " ).arg(mLectureId));
@@ -40,6 +40,7 @@ Lecture SqlGetLecture::prepareResultOnSuccess()
         {
             quint32 testId = value(4).toInt();
             QString testName = value(5).toString();
+            testData = value(6).toString();
             Test test(testId, testName);
             lecture.setTest(test);
         }

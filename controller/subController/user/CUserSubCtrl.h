@@ -22,6 +22,7 @@ private:
 public:
     CUserSubCtrl( std::shared_ptr<CSqlSubCtrl> sqlController );
     qint32 getClientDatabaseId(const quint32 clientId);
+    ClientType getClientType(const quint32 clientId);
     bool isClientHasPermission(const quint32 clientId, const ClientType persmissions);
 
 
@@ -56,6 +57,11 @@ private:
         quint32 getClientDatabaseId() const
         {
             return mClientDatabaseId;
+        }
+
+        ClientType getClientType() const
+        {
+            return mClientType;
         }
 
     private:

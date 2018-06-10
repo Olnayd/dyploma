@@ -6,9 +6,9 @@
 
 #include "ICourseResponseHandle.hpp"
 #include "network/CNetworkClient.hpp"
-#include "types/CourseListWorkingType.hpp"
-#include "types/CourseListFilter.hpp"
-#include "types/Lecture.hpp"
+#include "types/course/CourseListWorkingType.hpp"
+#include "types/course/CourseListFilter.hpp"
+#include "types/lecture/Lecture.hpp"
 
 class CCourseProcessor
         : public QObject
@@ -20,9 +20,20 @@ public:
     bool start();
 
     // in working process
+    virtual void createTest( const quint32 lectureId, const Test& test, const CResponseContext& responseContext) = 0;
     virtual void createLecture( const quint32 courseId, const Lecture& lecture, const CResponseContext& responseContext) = 0;
+
+    virtual void getTest(const quint32 lectureId, const CResponseContext& responseContext) = 0;
     virtual void getLecture(const quint32 lectureId, const CResponseContext& responseContext) = 0;
     virtual void getLecturePreviewList(const quint32 courseid, const CResponseContext& responseContext) = 0;
+
+    //virtual void finishTest(const quint32 testId,/**answers for a question**/, const CResponseContext& responseContext) = 0;
+    //virtual void finishLecture(const quint32 lectureId, const CResponseContext& responseContext) = 0;
+
+
+
+    virtual void response_createTest(const bool result, const CResponseContext& responseContext) override final;
+    virtual void response_getTest( const Test& test, const CResponseContext& responseContext ) override final;
 
     virtual void response_createLecture(const bool result, const CResponseContext& responseContext) override final;
     virtual void response_getLecture( const Lecture& lecture, const CResponseContext& responseContext ) override final;

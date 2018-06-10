@@ -3,7 +3,7 @@
 
 #include <QVector>
 #include "database/query/SqlQuery.h"
-#include "network/processor/course/types/Lecture.hpp"
+#include "network/processor/course/types/lecture/Lecture.hpp"
 
 
 class SqlGetLecturePreviewList : public SqlQuery<QVector<Lecture>>

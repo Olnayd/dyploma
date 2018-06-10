@@ -11,9 +11,9 @@ SqlCoupleLectureToCourse::SqlCoupleLectureToCourse(const quint32 courseId, ::std
 QStringList SqlCoupleLectureToCourse::preapareStatement()
 {
     QStringList result;
-    result.push_back( QString( "INSERT INTO CourseToLecture (id_course, id_lection)"
-                               "VALUES (%1, %2);").arg( mCourseId )
-                                                  .arg( mQueryCreateLection->getResult() ));
+    result.push_back( QString( " INSERT INTO CourseToLecture (id_course, id_lecture, position) "
+                               " VALUES (%1, %2, 0); ").arg( mCourseId )
+                                                       .arg( mQueryCreateLection->getResult() ));
     return result;
 }
 

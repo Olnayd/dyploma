@@ -2,7 +2,7 @@
 #define SQLCREATELECTION_HPP
 
 #include "database/query/SqlQuery.h"
-#include "network/processor/course/types/Lecture.hpp"
+#include "network/processor/course/types/lecture/Lecture.hpp"
 
 class SqlCreateLecture : public SqlQuery<quint32>
 {

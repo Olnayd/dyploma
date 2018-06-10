@@ -1,18 +1,20 @@
 #include "SqlCreateTest.hpp"
 #include "SqlCreateLecture.hpp"
 
-SqlCreateTest::SqlCreateTest(const Test& test, const quint32 lectureId)
+SqlCreateTest::SqlCreateTest(const Test& test, const QString data, const quint32 lectureId)
     : SqlQuery<quint32>(TEXT_STORAGE)
     , mTest(test)
+    , mData(data)
     , mLectureId(lectureId)
-    ,mQueryCreateLecture ( nullptr )
+    , mQueryCreateLecture ( nullptr )
 {
 
 }
 
-SqlCreateTest::SqlCreateTest(const Test& test, ::std::shared_ptr<SqlCreateLecture> queryCreateLecture)
+SqlCreateTest::SqlCreateTest(const Test& test, const QString data, ::std::shared_ptr<SqlCreateLecture> queryCreateLecture)
     : SqlQuery<quint32>(TEXT_STORAGE)
     , mTest(test)
+    , mData(data)
     , mLectureId(-1)
     , mQueryCreateLecture(queryCreateLecture)
 {
@@ -24,9 +26,10 @@ SqlCreateTest::SqlCreateTest(const Test& test, ::std::shared_ptr<SqlCreateLectur
 QStringList SqlCreateTest::preapareStatement()
 {
     QStringList result;
-    result.push_back( QString( "INSERT INTO Test(id, name ) "
-                               "VALUES (%1,%2); ").arg(mTest.NameByRef())
-                                                  .arg( mQueryCreateLecture ? mQueryCreateLecture->getResult() : mLectureId));
+    result.push_back( QString( "INSERT INTO Test(id, name, data) "
+                               "VALUES (%1,'%2','%3'); ").arg( mQueryCreateLecture ? mQueryCreateLecture->getResult() : mLectureId  )
+                                                     .arg( mTest.NameByRef() )
+                                                     .arg( mData ));
 
     return result;
 }

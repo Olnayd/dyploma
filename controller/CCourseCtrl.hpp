@@ -31,6 +31,10 @@ public:
     virtual void getCourseList( const CourseListWorkingType workType, const CResponseContext& responseContext) override final;
     virtual void getCourseListByFilter( const CourseListWorkingType workType, const CourseListFilter& filter, const CResponseContext& responseContext) override final;
 
+
+
+    virtual void getTest(const quint32 lectureId, const CResponseContext& responseContext) override final;
+    virtual void createTest( const quint32 lectureId, const Test& test, const CResponseContext& responseContext) override final;
     virtual void createLecture( const quint32 courseId, const Lecture& lecture, const CResponseContext& responseContext) override final;
     virtual void getLecture(const quint32 lectureId, const CResponseContext& responseContext) override final;
     virtual void getLecturePreviewList(const quint32 courseid, const CResponseContext& responseContext) override final;

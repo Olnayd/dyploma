@@ -5,7 +5,7 @@
 #include <memory>
 #include "database/query/SqlQuery.h"
 
-#include "network/processor/course/types/Lecture.hpp"
+#include "network/processor/course/types/lecture/Lecture.hpp"
 
 
 class SqlCoupleLectureToCourse : public SqlQuery<quint32>

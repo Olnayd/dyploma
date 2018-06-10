@@ -14,7 +14,10 @@ enum RequestType
 
     Request_CreateLecture,
     Request_GetLecturePreviewList,
-    Request_GetLecture
+    Request_GetLecture,
+
+    Request_CreateTest,
+    Request_GetTest
 
 };
 

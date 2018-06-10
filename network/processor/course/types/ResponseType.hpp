@@ -13,7 +13,10 @@ enum ResponseType
 
     Response_CreateLecture,
     Response_GetLecturePreviewList,
-    Response_GetLecture
+    Response_GetLecture,
+
+    Response_CreateTest,
+    Response_GetTest
 };
 
 

@@ -1,12 +1,12 @@
-#ifndef SQLCHECKISUSERLISTENER_H
-#define SQLCHECKISUSERLISTENER_H
+#ifndef SQLCHECKISUSERCREATOR_H
+#define SQLCHECKISUSERCREATOR_H
 
 #include "database/query/SqlQuery.h"
 
-class SqlCheckIsUserListener : public SqlQuery<bool>
+class SqlCheckIsUserCreatorByCourseId : public SqlQuery<bool>
 {
 public:
-    SqlCheckIsUserListener(const qint32 clientDatabaseId, const quint32 courseId);
+    SqlCheckIsUserCreatorByCourseId(const qint32 clientDatabaseId, const quint32 courseId);
 
 private:
     virtual bool prepareResultOnError() override final;
@@ -17,4 +17,5 @@ private:
     qint32 mClientDatabaseId;
     quint32 mCourseId;
 };
-#endif // SQLCHECKISUSERLISTENER_H
+
+#endif // SQLCHECKISUSERCREATOR_H
