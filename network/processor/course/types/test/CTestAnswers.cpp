@@ -2,6 +2,8 @@
 
 TestAnswer::TestAnswer()
  : mIsRightAnswer(false)
+ , __isset{false, false, false}
+
 {
 
 }

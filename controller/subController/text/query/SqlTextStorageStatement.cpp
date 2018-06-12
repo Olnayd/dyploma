@@ -138,6 +138,7 @@ QStringList SqlTextStorageStatement::preapareStatement()
      result.push_back( QString( "CREATE TABLE IF NOT EXISTS TestToUser(              \
                                 id_user   INTEGER NOT NULL,                          \
                                 id_test    INTEGER NOT NULL,                         \
+                                evaluation INTEGER NOT NULL,                         \
                                 FOREIGN KEY (id_user) REFERENCES User(id),           \
                                 FOREIGN KEY (id_test) REFERENCES Test(id),           \
                                 PRIMARY KEY (id_user, id_test)                       \

@@ -46,7 +46,7 @@ bool CCourseCtrl::prepareShutdown()
         mTextController->getTopicList(responseContext, *this);
     }
     else
-        response_error(Error_WTF, responseContext);
+        response_error(Error_User_Does_Not_Has_Permissions, responseContext);
 }
 /*virtual*/ void CCourseCtrl::getCourseList( const CourseListWorkingType workType, const CResponseContext& responseContext)
 {
@@ -72,7 +72,7 @@ bool CCourseCtrl::prepareShutdown()
         mTextController->getCourseListByFilter(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()), workType, filter, responseContext, *this);
     }
     else
-        response_error(Error_WTF, responseContext);
+        response_error(Error_User_Does_Not_Has_Permissions, responseContext);
 }
 
 /*virtual*/ void CCourseCtrl::subscribeOnCourse(const quint32 courseid, const CResponseContext& responseContext)
@@ -82,7 +82,7 @@ bool CCourseCtrl::prepareShutdown()
         mTextController->subscribeOnCourse(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()), courseid, responseContext, *this);
     }
     else
-        response_error(Error_WTF, responseContext);
+        response_error(Error_User_Does_Not_Has_Permissions, responseContext);
 }
 
 /*virtual*/ void CCourseCtrl::createCourse( const Course& courseInfo, const CResponseContext& responseContext)
@@ -92,7 +92,7 @@ bool CCourseCtrl::prepareShutdown()
         mTextController->createCourse(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()), courseInfo, responseContext, *this);
     }
     else
-        response_error(Error_WTF, responseContext);
+        response_error(Error_User_Does_Not_Has_Permissions, responseContext);
 }
 
 /*virtual*/ void CCourseCtrl::createLecture( const quint32 courseId, const Lecture& lecture, const CResponseContext& responseContext)
@@ -102,7 +102,7 @@ bool CCourseCtrl::prepareShutdown()
         mTextController->createLecture(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()), courseId,  lecture, responseContext, *this);
     }
     else
-        response_error(Error_WTF, responseContext);
+        response_error(Error_User_Does_Not_Has_Permissions, responseContext);
 }
 /*virtual*/ void CCourseCtrl::createTest( const quint32 lectureId, const Test& test, const CResponseContext& responseContext)
 {
@@ -111,7 +111,7 @@ bool CCourseCtrl::prepareShutdown()
        mTextController->createTest(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()),lectureId,  test, responseContext, *this);
     }
     else
-        response_error(Error_WTF, responseContext);
+        response_error(Error_User_Does_Not_Has_Permissions, responseContext);
 }
 
 /*virtual*/ void CCourseCtrl::getTest(const quint32 lectureId, const CResponseContext& responseContext)
@@ -123,7 +123,7 @@ bool CCourseCtrl::prepareShutdown()
                                  lectureId, responseContext, *this);
     }
     else
-        response_error(Error_WTF, responseContext);
+        response_error(Error_User_Does_Not_Has_Permissions, responseContext);
 
 }
 
@@ -136,7 +136,7 @@ bool CCourseCtrl::prepareShutdown()
                                     mUserController->getClientType(responseContext.clientPtr->getClientId()),lectureId, responseContext, *this);
     }
     else
-        response_error(Error_WTF, responseContext);
+        response_error(Error_User_Does_Not_Has_Permissions, responseContext);
 }
 
 /*virtual*/ void CCourseCtrl::getLecturePreviewList(const quint32 courseId, const CResponseContext& responseContext)
@@ -147,21 +147,30 @@ bool CCourseCtrl::prepareShutdown()
                                                mUserController->getClientType(responseContext.clientPtr->getClientId()), courseId, responseContext, *this );
     }
     else
-        response_error(Error_WTF, responseContext);
+        response_error(Error_User_Does_Not_Has_Permissions, responseContext);
 }
 
+/*virtual*/ void CCourseCtrl::finishTest(const TestUserAnswers& userAnswears, const CResponseContext& responseContext)
+{
+    if (mUserController->isClientHasPermission( responseContext.clientPtr->getClientId(), Student ))
+    {
+        mTextController->finishTest(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()),
+                                    userAnswears, responseContext, *this );
+    }
+    else
+        response_error(Error_User_Does_Not_Has_Permissions, responseContext);
+}
 
-///*virtual*/ void CCourseCtrl::getCourseInfo(const quint32 courseId, const CResponseContext& responseContext)
-//{
-//    if (mUserController->isClientHasPermission( responseContext.clientPtr->getClientId(), Student ))
-//    {
-//        response_getCourseInfo(responseContext);
-//    }
-//    else
-//        response_error(Error_WTF, responseContext);
-
-
-//}
+/*virtual*/ void CCourseCtrl::finishLecture(const quint32 lectureId, const CResponseContext& responseContext)
+{
+    if (mUserController->isClientHasPermission( responseContext.clientPtr->getClientId(), Student ))
+    {
+        mTextController->finishLecture(mUserController->getClientDatabaseId(responseContext.clientPtr->getClientId()),
+                                               lectureId, responseContext, *this );
+    }
+    else
+        response_error(Error_User_Does_Not_Has_Permissions, responseContext);
+}
 
 /*virtual*/ void CCourseCtrl::signIn(const ClientIdentificator &clientIdent, const CResponseContext &responseContext)
 {

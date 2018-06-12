@@ -1,6 +1,8 @@
 #include "TestQuestion.hpp"
 
 TestQuestion::TestQuestion()
+    : mQuestionType(TestQuestionType::ONE_ANSWER)
+    , __isset{false, false, false, false}
 {
 
 }

@@ -23,7 +23,7 @@ void fillCommonInfoForResponse(QDataStream& dataStream, const CResponseContext& 
 
 void fillCommonInfoForError(QDataStream& dataStream, const ErrorType error, const CResponseContext& responseContext)
 {
-    dataStream << (quint32)Response_Unknown << responseContext.seqId << error;
+    dataStream << Response_Unknown << responseContext.seqId << error;
 }
 
 ResponseType getResponse(const RequestType requestType)
@@ -40,6 +40,8 @@ ResponseType getResponse(const RequestType requestType)
     case Request_CreateLecture:         return Response_CreateLecture;
     case Request_GetLecturePreviewList: return Response_GetLecturePreviewList;
     case Request_GetLecture:            return Response_GetLecture;
+    case Request_FinishLecture:         return Response_FinishLection;
+    case Request_FinishTest:            return Response_FinishTest;
     default:                            return Response_Unknown;
     }
 }
@@ -118,12 +120,12 @@ void CCourseProcessor::slotReadClient()
         }
 
         quint32 seqId;
-        quint32 requestId;
+        RequestType requestId;
 
         in >> requestId;
         seqId = getSequenceId();
         sendToClient(pClientSocket, requestId, seqId);
-        CResponseContext responseContext(mClientList.find(clientId)->second, getResponse(static_cast<RequestType>(requestId)), seqId);
+        CResponseContext responseContext(mClientList.find(clientId)->second, getResponse(requestId), seqId);
 
         switch (requestId) {
         case Request_CreateTest:
@@ -163,6 +165,23 @@ void CCourseProcessor::slotReadClient()
             getLecture(lectureId, responseContext);
 
         } break;
+
+        case Request_FinishLecture:
+        {
+            quint32 lectureId;
+            in >> lectureId;
+            qDebug()<< "CCM :: finishLecture( " + QString::number(lectureId) + " )";
+            finishLecture(lectureId, responseContext);
+        } break;
+
+        case Request_FinishTest:
+        {
+            TestUserAnswers userAnswers;
+            in >> userAnswers;
+            qDebug()<< "CCM :: finishTest( " + QString::number(userAnswers.TestId()) + " )";
+            finishTest(userAnswers, responseContext);
+        } break;
+
 
         case Request_CreateLecture:
         {
@@ -327,6 +346,52 @@ void CCourseProcessor::sendToClient(QTcpSocket* pSocket, const quint32 requestid
         pClientSocket->write(arrBlock);
     }
 }
+
+
+/*virtual*/ void CCourseProcessor::response_finishLecture(const bool result, const CResponseContext& responseContext)
+{
+    //if ( responseContext.responseId != (quint32)Response_CreateLection ) ; //TODO: alarm
+
+    auto it = mClientList.find(responseContext.clientPtr->getClientId());
+    if (it != mClientList.end())
+    {
+        QTcpSocket* pClientSocket = it->second->getSocket();
+        QByteArray  arrBlock;
+        QDataStream out(&arrBlock, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_3);
+        out << quint16(0);
+
+        fillCommonInfoForResponse(out, responseContext);
+
+        out << result;
+        out.device()->seek(0);
+        out << quint16(arrBlock.size() - sizeof(quint16));
+        pClientSocket->write(arrBlock);
+    }
+}
+
+/*virtual*/ void CCourseProcessor::response_finishTest(const qreal evaluation, const CResponseContext& responseContext)
+{
+    //if ( responseContext.responseId != (quint32)Response_CreateLection ) ; //TODO: alarm
+
+    auto it = mClientList.find(responseContext.clientPtr->getClientId());
+    if (it != mClientList.end())
+    {
+        QTcpSocket* pClientSocket = it->second->getSocket();
+        QByteArray  arrBlock;
+        QDataStream out(&arrBlock, QIODevice::WriteOnly);
+        out.setVersion(QDataStream::Qt_5_3);
+        out << quint16(0);
+
+        fillCommonInfoForResponse(out, responseContext);
+
+        out << evaluation;
+        out.device()->seek(0);
+        out << quint16(arrBlock.size() - sizeof(quint16));
+        pClientSocket->write(arrBlock);
+    }
+}
+
 
 /*virtual*/ void CCourseProcessor::response_createTest(const bool result, const CResponseContext& responseContext)
 {

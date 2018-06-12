@@ -1,5 +1,6 @@
 #include "CTextStorageSubCtrl.h"
 
+#include <set>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QJsonObject>
@@ -25,6 +26,10 @@
 #include "query/SqlCheckIsUserCreatorByLectureId.hpp"
 #include "query/SqlCheckIsUserListenerByLectureId.hpp"
 #include "query/SqlGetTest.hpp"
+#include "query/SqlCheckIsTestIsDone.hpp"
+#include "query/SqlFinishLecture.hpp"
+#include "query/SqlFinishTest.hpp"
+
 
 
 
@@ -82,7 +87,7 @@ void CTextStorageSubCtrl::getTopicList(const CResponseContext& responseContext, 
         reponseHandle.response_getTopicList(query.getResult(), responseContext);
     }
     else
-        reponseHandle.response_error(Error_WTF, responseContext);
+        reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
 }
 
 void CTextStorageSubCtrl::getCourseListByFilter( const qint32 clientdatabaseid, const CourseListWorkingType workType, const CourseListFilter& filter, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
@@ -97,6 +102,7 @@ void CTextStorageSubCtrl::getCourseListByFilter( const qint32 clientdatabaseid, 
 
     if(mSqlController->executeQuery(*queryFetchAllCourses))
     {
+        bool isError =false;
         QVector<Course> courseInfoList = queryFetchAllCourses->getResult();
         for(Course& course : courseInfoList)
         {
@@ -105,11 +111,15 @@ void CTextStorageSubCtrl::getCourseListByFilter( const qint32 clientdatabaseid, 
             {
                 course.topicList = queryTopicListForCourse.getResult();
             }
+            else
+            { isError =true; break;}
         }
-        reponseHandle.response_getCourseList(courseInfoList, responseContext);
+        if(isError) reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
+        else
+            reponseHandle.response_getCourseList(courseInfoList, responseContext);
     }
     else
-        reponseHandle.response_error(Error_WTF, responseContext);
+        reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
 }
 
 void CTextStorageSubCtrl::subscribeOnCourse( const qint32 clientdatabaseid,const quint32 courseid, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
@@ -120,7 +130,50 @@ void CTextStorageSubCtrl::subscribeOnCourse( const qint32 clientdatabaseid,const
         reponseHandle.response_subscribeOnCourse(query.getResult(), responseContext);
     }
     else
-        reponseHandle.response_error(Error_WTF, responseContext);
+        reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
+}
+
+
+void CTextStorageSubCtrl::finishTest(const qint32 clientDatabaseId, const TestUserAnswers& userAnswears, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
+{
+    SqlCheckIsUserListenerByLectureId queryIsUserListener(clientDatabaseId, userAnswears.TestIdByRef());
+    if(mSqlController->executeQuery(queryIsUserListener) && queryIsUserListener.getResult())
+    {
+        SqlGetTest query(userAnswears.TestIdByRef());
+        if(mSqlController->executeQuery(query))
+        {
+            Test test = query.getResult();
+            qreal evaluation = getEvaluation(test.QuestionListByRef(), userAnswears);
+            SqlFinishTest query(userAnswears.TestIdByRef(), clientDatabaseId, evaluation);
+            if(mSqlController->executeQuery(query))
+            {
+                reponseHandle.response_finishTest(evaluation, responseContext);
+            }
+            else
+                reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
+        }
+        else
+            reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
+    }
+    else
+        reponseHandle.response_error(Error_User_Is_Not_Listener_Of_the_Course, responseContext);
+
+}
+void CTextStorageSubCtrl::finishLecture(const qint32 clientDatabaseId, const quint32 lectureId, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
+{
+    SqlCheckIsUserListenerByLectureId queryIsUserListener(clientDatabaseId, lectureId);
+    if(mSqlController->executeQuery(queryIsUserListener) && queryIsUserListener.getResult())
+    {
+        SqlFinishLecture query(lectureId, clientDatabaseId);
+        if(mSqlController->executeQuery(query))
+        {
+            reponseHandle.response_finishLecture(query.getResult(), responseContext);
+        }
+        else
+            reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
+    }
+    else
+        reponseHandle.response_error(Error_User_Is_Not_Listener_Of_the_Course, responseContext);
 }
 
 void CTextStorageSubCtrl::createCourse( const qint32 clientdatabaseid, const Course& courseInfo, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
@@ -131,7 +184,7 @@ void CTextStorageSubCtrl::createCourse( const qint32 clientdatabaseid, const Cou
         reponseHandle.response_createCourse(query.getResult(), responseContext);
     }
     else
-        reponseHandle.response_error(Error_WTF, responseContext);
+        reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
 
 }
 
@@ -155,10 +208,10 @@ void CTextStorageSubCtrl::getTest(const qint32 clientDatabaseId, const ClientTyp
                 reponseHandle.response_getTest(result, responseContext);
             }
             else
-                reponseHandle.response_error(Error_WTF, responseContext);
+                reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
         }
         else
-            reponseHandle.response_error(Error_WTF, responseContext);
+            reponseHandle.response_error(Error_User_Is_Not_Listener_Of_the_Course, responseContext);
 
     } break;
 
@@ -178,10 +231,10 @@ void CTextStorageSubCtrl::getTest(const qint32 clientDatabaseId, const ClientTyp
                 reponseHandle.response_getTest(result, responseContext);
             }
             else
-                reponseHandle.response_error(Error_WTF, responseContext);
+                reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
         }
         else
-            reponseHandle.response_error(Error_WTF, responseContext);
+            reponseHandle.response_error(Error_User_Is_Not_Creator_Of_the_Course, responseContext);
     } break;
 
     default:
@@ -201,10 +254,10 @@ void CTextStorageSubCtrl::createTest(const qint32 clientDatabaseId, const quint3
             reponseHandle.response_createTest(querySqlCreateTest.getResult(), responseContext);
         }
         else
-            reponseHandle.response_error(Error_WTF, responseContext);
+            reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
     }
     else
-        reponseHandle.response_error(Error_WTF, responseContext);
+        reponseHandle.response_error(Error_User_Is_Not_Creator_Of_the_Course, responseContext);
 }
 
 void CTextStorageSubCtrl::createLecture(const qint32 clientDatabaseId, const quint32 courseId, const Lecture& lecture, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
@@ -239,10 +292,10 @@ void CTextStorageSubCtrl::createLecture(const qint32 clientDatabaseId, const qui
                 reponseHandle.response_createLecture(false,responseContext);
         }
         else
-            reponseHandle.response_error(Error_WTF, responseContext);
+            reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
     }
     else
-        reponseHandle.response_error(Error_WTF, responseContext);
+        reponseHandle.response_error(Error_User_Is_Not_Creator_Of_the_Course, responseContext);
 }
 
 void CTextStorageSubCtrl::getLecture( const qint32 clientDatabaseId, const ClientType clientType, const quint32 lectureId, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle)
@@ -278,13 +331,13 @@ void CTextStorageSubCtrl::getLecture( const qint32 clientDatabaseId, const Clien
                     reponseHandle.response_getLecture(result, responseContext);
                 }
                 else
-                    reponseHandle.response_error(Error_WTF, responseContext);
+                    reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
             }
             else
-                reponseHandle.response_error(Error_WTF, responseContext);
+                reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
         }
         else
-            reponseHandle.response_error(Error_WTF, responseContext);
+            reponseHandle.response_error(Error_User_Is_Not_Listener_Of_the_Course, responseContext);
 
     } break;
 
@@ -316,13 +369,13 @@ void CTextStorageSubCtrl::getLecture( const qint32 clientDatabaseId, const Clien
                     reponseHandle.response_getLecture(result, responseContext);
                 }
                 else
-                    reponseHandle.response_error(Error_WTF, responseContext);
+                    reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
             }
             else
-                reponseHandle.response_error(Error_WTF, responseContext);
+                reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
         }
         else
-            reponseHandle.response_error(Error_WTF, responseContext);
+            reponseHandle.response_error(Error_User_Is_Not_Creator_Of_the_Course, responseContext);
     } break;
 
     default:
@@ -351,18 +404,29 @@ void CTextStorageSubCtrl::getLecturePreviewList( const qint32 clientDatabaseId, 
                     if(!mSqlController->executeQuery(queryCheckIsLectureDone))
                     {isErrorOccurs =true; break;}
                     lecture.setIsLectureDone(queryCheckIsLectureDone.getResult());
+
+                    SqlCheckIsTestIsDone queryCheckIsTestDone(clientDatabaseId, lecture.IdByRef());
+                    if(!mSqlController->executeQuery(queryCheckIsTestDone))
+                    {isErrorOccurs =true; break;}
+                    if (queryCheckIsTestDone.getResult() && lecture.__isset.test)
+                    {
+                        Test test = lecture.Test();
+                        test.setEvaluation(queryCheckIsTestDone.evaluation);
+                        lecture.setTest(test);
+                    }
+
                 }
 
                 if(isErrorOccurs)
-                    reponseHandle.response_error(Error_WTF, responseContext);
+                    reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
                 else
                     reponseHandle.response_getLecturePreviewList(result, responseContext);
             }
             else
-                reponseHandle.response_error(Error_WTF, responseContext);
+                reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
         }
         else
-            reponseHandle.response_error(Error_WTF, responseContext);
+            reponseHandle.response_error(Error_User_Is_Not_Listener_Of_the_Course, responseContext);
 
     } break;
 
@@ -386,20 +450,53 @@ void CTextStorageSubCtrl::getLecturePreviewList( const qint32 clientDatabaseId, 
                 }
 
                 if(isErrorOccurs)
-                    reponseHandle.response_error(Error_WTF, responseContext);
+                    reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
                 else
                     reponseHandle.response_getLecturePreviewList(result, responseContext);
             }
             else
-                reponseHandle.response_error(Error_WTF, responseContext);
+                reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
         }
         else
-            reponseHandle.response_error(Error_WTF, responseContext);
+            reponseHandle.response_error(Error_User_Is_Not_Creator_Of_the_Course, responseContext);
     } break;
 
     default:
         reponseHandle.response_error(Error_WTF, responseContext);
     }
+}
+
+qreal CTextStorageSubCtrl::getEvaluation( QVector<TestQuestion> questionList, TestUserAnswers userAnswers)
+{
+    const quint32 max_result = 10;
+    const quint32 countOfQuestions = questionList.size();
+
+    quint32 countOfRightQuestions = 0;
+    quint32 countOfWrongQuestions = 0;
+
+    QMultiMap<quint32, quint32> userAnswerByRef = userAnswers.AnswersByRef();
+    for( TestQuestion& question : questionList )
+    {
+        quint32 countOfRightAnswers = 0;
+        quint32 countOfWrongAnswers = 0;
+        std::set<quint32> collectionOfRightAnswers;
+        QVector<TestAnswer> answerList = question.AnswerListByRef();
+        for (TestAnswer& answer: answerList )
+            if(answer.IsRightAnswer()) collectionOfRightAnswers.insert(answer.Id());
+
+        auto it = userAnswerByRef.find(question.Id());
+        for ( ; it != userAnswerByRef.end() && it.key() == question.Id(); ++it)
+        {
+            auto itExist = collectionOfRightAnswers.find(it.value());
+            if ( itExist == collectionOfRightAnswers.end()) countOfWrongAnswers++;
+            else countOfRightAnswers++;
+        };
+
+        if(countOfWrongAnswers == 0 && countOfRightAnswers == collectionOfRightAnswers.size()) countOfRightQuestions++;
+        else countOfWrongQuestions++;
+    }
+
+    return ((qreal)max_result/(qreal)countOfQuestions) * countOfRightQuestions;
 }
 
 QString CTextStorageSubCtrl::getTestQuestionAsJson( const Test& test)

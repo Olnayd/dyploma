@@ -3,14 +3,15 @@
 
 #include<memory>
 #include "CNetworkClient.hpp"
+#include "processor/course/types/ResponseType.hpp"
 
 class CResponseContext
 {
 public:
-    CResponseContext(const std::shared_ptr<CNetworkClient> clientPtr_, const quint32 responseId_, const quint32 seqId_);
+    CResponseContext(const std::shared_ptr<CNetworkClient> clientPtr_, const ResponseType responseId_, const quint32 seqId_);
 
     const std::shared_ptr<CNetworkClient> clientPtr;
-    const quint32 responseId;
+    const ResponseType responseId;
     const quint32 seqId;
 };
 

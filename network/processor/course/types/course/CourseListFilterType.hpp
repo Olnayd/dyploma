@@ -13,6 +13,6 @@ enum CourseListFilterType
 };
 
 QDataStream& operator >>(QDataStream& stream, CourseListFilterType& type);
-QDataStream& operator <<(QDataStream& stream, CourseListFilterType& type);
+QDataStream& operator <<(QDataStream& stream, const CourseListFilterType& type);
 
 #endif // COURSELISTFILTERTYPE_H

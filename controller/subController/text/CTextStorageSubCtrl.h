@@ -6,6 +6,7 @@
 #include "network/processor/course/types/course/CourseListWorkingType.hpp"
 #include "network/processor/course/types/course/CourseListFilter.hpp"
 #include "network/processor/course/types/lecture/Lecture.hpp"
+#include "network/processor/course/types/test/TestUserAnswers.hpp"
 #include "network/processor/course/ICourseResponseHandle.hpp"
 
 class CTextStorageSubCtrl : public common::controller::CSubController
@@ -29,9 +30,17 @@ public:
 
     void subscribeOnCourse(const qint32 clientdatabaseid, const quint32 courseid, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle);
 
+    void finishTest(const qint32 clientdatabaseid, const TestUserAnswers& userAnswears, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandle);
+    void finishLecture(const qint32 clientdatabaseid, const quint32 lectureId, const CResponseContext& responseContext, ICourseResponseHandle& reponseHandles);
+
+
+
+
 private:
     QVector<TestQuestion> getTestQuestionFromJson( const QString& jsonQuestions, bool ignoreRightAnswer);
     QString getTestQuestionAsJson( const Test& test);
+
+    qreal getEvaluation( QVector<TestQuestion> questionList, TestUserAnswers userAnswers);
 private:
     std::shared_ptr<CSqlSubCtrl> mSqlController;
 };

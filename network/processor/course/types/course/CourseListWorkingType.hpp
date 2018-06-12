@@ -12,6 +12,6 @@ enum CourseListWorkingType
 
 
 QDataStream& operator >>(QDataStream& stream, CourseListWorkingType& type);
-QDataStream& operator <<(QDataStream& stream, CourseListWorkingType& type);
+QDataStream& operator <<(QDataStream& stream, const CourseListWorkingType& type);
 
 #endif // COURSELISTWORKINGTYPE_H

@@ -80,7 +80,7 @@ void CUserSubCtrl::signIn( const ClientIdentificator& clientIdent,
         reponseHandle.response_signIn(info, responseContext);
     }
     else
-        reponseHandle.response_error(Error_WTF, responseContext);
+        reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
 
 
     //sql query
@@ -95,7 +95,7 @@ void CUserSubCtrl::signUp(const ClientIdentificator& clientIdent, const ClientIn
         reponseHandle.response_signUp(query.getResult(), responseContext);
     }
     else
-        reponseHandle.response_error(Error_WTF, responseContext);
+        reponseHandle.response_error(Error_Internal_Sql_Error, responseContext);
 }
 
 void CUserSubCtrl::removeClient()

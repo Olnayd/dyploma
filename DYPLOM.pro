@@ -74,7 +74,11 @@ HEADERS += \
     controller/subController/text/query/SqlCheckIsUserListenerByCourseId.hpp \
     controller/subController/text/query/SqlCheckIsUserCreatorByLectureId.hpp \
     controller/subController/text/query/SqlCheckIsUserListenerByLectureId.hpp \
-    controller/subController/text/query/SqlGetTest.hpp
+    controller/subController/text/query/SqlGetTest.hpp \
+    network/processor/course/types/test/TestUserAnswers.hpp \
+    controller/subController/text/query/SqlFinishTest.hpp \
+    controller/subController/text/query/SqlFinishLecture.hpp \
+    controller/subController/text/query/SqlCheckIsTestIsDone.hpp
 
 SOURCES += \
     common/controller/CController.cpp \
@@ -135,4 +139,10 @@ SOURCES += \
     controller/subController/text/query/SqlCheckIsUserListenerByCourseId.cpp \
     controller/subController/text/query/SqlCheckIsUserCreatorByLectureId.cpp \
     controller/subController/text/query/SqlCheckIsUserListenerByLectureId.cpp \
-    controller/subController/text/query/SqlGetTest.cpp
+    controller/subController/text/query/SqlGetTest.cpp \
+    network/processor/course/types/RequestType.cpp \
+    network/processor/course/types/ResponseType.cpp \
+    network/processor/course/types/test/TestUserAnswers.cpp \
+    controller/subController/text/query/SqlFinishTest.cpp \
+    controller/subController/text/query/SqlFinishLecture.cpp \
+    controller/subController/text/query/SqlCheckIsTestIsDone.cpp

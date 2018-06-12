@@ -16,7 +16,7 @@ public:
 };
 
 QDataStream& operator >>(QDataStream& stream, CourseListFilter& type);
-QDataStream& operator <<(QDataStream& stream, CourseListFilter& type);
+QDataStream& operator <<(QDataStream& stream, const CourseListFilter& type);
 
 
 #endif // COURSELISTFILTER_H

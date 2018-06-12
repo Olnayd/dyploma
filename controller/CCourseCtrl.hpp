@@ -42,6 +42,10 @@ public:
     virtual void subscribeOnCourse(const quint32 courseid, const CResponseContext& responseContext) override final;
     virtual void createCourse( const Course& courseInfo, const CResponseContext& responseContext) override final;
 
+    virtual void finishTest(const TestUserAnswers& userAnswears, const CResponseContext& responseContext) override final;
+    virtual void finishLecture(const quint32 lectureId, const CResponseContext& responseContext) override final;
+
+
 
     virtual void signIn(const ClientIdentificator &clientIdent, const CResponseContext &responseContext) override;
     virtual void signUp(const ClientIdentificator &clientIdent, const ClientInformation &clientInfo, const CResponseContext &responseContext) override;
